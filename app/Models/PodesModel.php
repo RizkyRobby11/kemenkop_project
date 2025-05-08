@@ -6,6 +6,5 @@ use Illuminate\Database\Eloquent\Model;
 
 class PodesModel extends Model
 {
-    protected $table = 'pengolahan_podes_1';
-    protected $fillable = ['COL_1', 'COL_2', 'COL_3'];
+    protected $table = 'data_podes2024'; // Ganti dengan nama tabel yang sesuai// Ganti dengan nama kolom yang sesuai
 }

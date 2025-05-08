@@ -8,21 +8,20 @@ use Illuminate\Support\Facades\Schema;
 
 class PodesController extends Controller
 {
-    public function index(){
+    public function index() {
+        $dataDesa = PodesModel::paginate(10);
+        $labels = PodesModel::first()->toArray();
 
-        $dataDesa = PodesModel::paginate(5);
-        $columns = Schema::getColumnListing('pengolahan_podes_1');
-        // $labels = $dataDesa->first()->toArray();
+        // Ubah semua baris menjadi associative array dengan kolom sebagai key
+        $filteredData = $dataDesa->slice(1, 10);
 
-        // // Hapus baris pertama dari data utama
-        // $filteredData = $dataDesa->slice(1)->map(function ($row) use ($labels) {
-        //    $row = $row->toArray();
-        //     return array_combine($labels, $row);
-        // });
+        // Dd($dataDesa);
 
-        // Hasil
-        // dd($labels, $filteredData);
-
-        return view('podes', compact('dataDesa', 'columns'));
+        return view('podes', compact('dataDesa', 'filteredData', 'labels'));
     }
+
 }
+
+
+
+
