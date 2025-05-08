@@ -26,7 +26,7 @@
                     </div>
                     <div class="w-full flex justify-end items-center gap-2 mb-3">
                         <div class="w-full flex justify-between">
-                            <label class="input">
+                            <label class="input w-3/4 md:w-[85%] lg:w-[93%]">
                                 <svg class="h-[1em] opacity-50" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
                                     <g stroke-linejoin="round" stroke-linecap="round" stroke-width="2.5" fill="none"
                                         stroke="currentColor">
