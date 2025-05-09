@@ -12,3 +12,4 @@ Route::get('/', function () {
 );
 
 Route::get('/podes', [PodesController::class, 'index'])->name('podes.index');
+Route::post('/filter', [PodesController::class, 'filter'])->name('podes.filter');
