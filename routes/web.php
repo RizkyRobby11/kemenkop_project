@@ -16,8 +16,9 @@ Route::get("/kabupatenkota", [FilterController::class, "getKabupatenKota"]);
 Route::get("/kecamatan", [FilterController::class, "getKecamatan"]);
 Route::get("/desakelurahan", [FilterController::class, "getDesaKelurahan"]);
 
-Route::get("/kabupatenbyprovinsi", [FilterController::class, "getKabupatenByProvinsi"]);
-Route::get("/kecamatanbykabupaten", [FilterController::class, "getKecamatanByKabupaten"]);
-Route::get("/desakelurahanbykecamatan", [FilterController::class, "getDesaKelurahanByKecamatan"]);
+Route::get("/provinsi/{kode_provinsi}/kabupatenkota", [FilterController::class, "getKabupatenByProvinsi"]);
+Route::get("/kabupatenkota/{kode_kabupaten_kota}/kecamatan", [FilterController::class, "getKecamatanByKabupaten"]);
+Route::get("/kecamatan/{kode_kecamatan}/desakelurahan", [FilterController::class, "getDesaKelurahanByKecamatan"]);
 
-Route::get("/podesbyfilter", [FilterController::class, "getPodesByFilter"]);
+Route::get("/filter", [FilterController::class, "getPodesByFilter"]);
+Route::post("/search", [FilterController::class, "getPodesBySearch"]);

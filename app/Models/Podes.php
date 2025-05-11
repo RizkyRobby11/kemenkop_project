@@ -9,7 +9,7 @@ class Podes extends Model
 
     public function desaKelurahan()
     {
-        return $this->belongsTo(DesaKelurahan::class, 'kode_kelurahan', 'kode_desa_kelurahan');
+        return $this->belongsTo(DesaKelurahan::class, 'kode_desa_kelurahan', 'kode_desa_kelurahan');
     }
 
 
