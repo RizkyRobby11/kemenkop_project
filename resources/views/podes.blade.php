@@ -7,10 +7,38 @@
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     @vite('resources/css/app.css')
     <script src="https://kit.fontawesome.com/d8c46daaeb.js" crossorigin="anonymous"></script>
+
     <title>DATABASE</title>
 </head>
 
 <body>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script>
+    $(document).ready(function () {
+        $('.provinsi-radio').on('change', function () {
+            var provinsi = $(this).val();
+            $.ajax({
+                url: '{{ route("podes.getKabupaten") }}',
+                type: 'GET',
+                data: { provinsi: provinsi },
+                success: function (kabupatens) {
+                    let container = $('#kabupaten-container');
+                    container.empty(); // kosongkan dulu
+
+                    kabupatens.forEach(function (kab) {
+                        container.append(
+                            `<label class="flex items-center gap-2">
+                                <input type="radio" name="kabupaten" value="${kab}" class="radio kabupaten-radio">
+                                ${kab}
+                            </label>`
+                        );
+                    });
+                }
+            });
+        });
+    });
+</script>
+
     <div class="flex flex-1 flex-col md:flex-row lg:flex-row">
 
         <!-- card -->
@@ -56,10 +84,10 @@
                                     <h3 class="text-lg font-bold mb-2">Provinsi</h3>
                                     <hr class="mb-4">
                                     <!-- Checkbox list -->
-                                    <div class="space-y-2 max-h-64 overflow-y-auto">
+                                    <div id="kabupaten-container" class="space-y-2 max-h-64 overflow-y-auto">
                                         @foreach ($provinsi as $item)
                                         <label class="flex items-center gap-2">
-                                            <input type="radio" name="provinsi" value="{{ $item->COL_1 }}" class="radio">
+                                            <input type="radio" name="provinsi" value="{{ $item->COL_1 }}" class="radio provinsi-radio">
                                             {{ $item->COL_1 }}
                                         </label>
                                         @endforeach
@@ -73,7 +101,7 @@
                                     <div class="space-y-2 max-h-64 overflow-y-auto">
                                         @foreach ($kabupaten as $item)
                                         <label class="flex items-center gap-2">
-                                            <input type="radio" name="provinsi" value="{{ $item->COL_2 }}" class="radio">
+                                            <input type="radio" name="kabupaten" value="{{ $item->COL_2 }}" class="radio">
                                             {{ $item->COL_2 }}
                                         </label>
                                         @endforeach
@@ -87,7 +115,7 @@
                                     <div class="space-y-2 max-h-64 overflow-y-auto">
                                         @foreach ($kecamatan as $item)
                                         <label class="flex items-center gap-2">
-                                            <input type="radio" name="provinsi" value="{{ $item->COL_3 }}" class="radio">
+                                            <input type="radio" name="kecamatan" value="{{ $item->COL_3 }}" class="radio">
                                             {{ $item->COL_3 }}
                                         </label>
                                         @endforeach
@@ -102,7 +130,7 @@
                                     <div class="space-y-2 max-h-64 overflow-y-auto">
                                         @foreach ($desa as $item)
                                         <label class="flex items-center gap-2">
-                                            <input type="radio" name="provinsi" value="{{ $item->COL_4 }}" class="radio">
+                                            <input type="radio" name="desa" value="{{ $item->COL_4 }}" class="radio">
                                             {{ $item->COL_4 }}
                                         </label>
                                         @endforeach
@@ -149,9 +177,9 @@
                                     @endforeach
                             </tbody>
                         </table>
-                        {{ $filteredData->links() }}
                     </div>
                 </div>
+                {{ $filteredData->links() }}
             </div>
         </div>
         <!-- /card -->
