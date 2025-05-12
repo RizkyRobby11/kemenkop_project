@@ -160,38 +160,71 @@ $(document).ready(function () {
             success: function (response) {
                 // Populate table
                 let tableContent = "";
-                response.data.forEach((item) => {
-                    let row = "<tr>";
-                    Object.keys(item).forEach((key) => {
-                        row += `<td>${item[key]}</td>`;
+
+                if (response.data.length === 0) {
+                    // Kosongkan isi tabel dan tampilkan pesan
+                    $("#notFoundMessage").removeClass("hidden");
+                } else {
+                    $("#notFoundMessage").addClass("hidden");
+
+                    response.data.forEach((item) => {
+                        let row = "<tr>";
+                        Object.keys(item).forEach((key) => {
+                            row += `<td>${item[key]}</td>`;
+                        });
+                        row += "</tr>";
+                        tableContent += row;
                     });
-                    row += "</tr>";
-                    tableContent += row;
-                });
+                }
+
                 $("#podesTable tbody").html(tableContent);
 
-                // Generate pagination
+                // Lanjutkan dengan membuat pagination hanya jika ada data
                 let paginationHtml = "";
-                response.links.forEach((link) => {
-                    if (link.url === null) {
-                        paginationHtml += `
-                                    <li class="page-item disabled">
-                                        <span class="page-link">${link.label}</span>
-                                    </li>
-                                `;
-                    } else {
-                        const pageNum = link.url.split("page=")[1];
-                        paginationHtml += `
-                                    <li class="page-item ${
-                                        link.active ? "active" : ""
-                                    }">
-                                        <a class="page-link" href="#" onclick="window.loadPodesData(${pageNum}, ${isSearch}); return false;">
-                                            ${link.label}
-                                        </a>
-                                    </li>
-                                `;
+
+                if (response.data.length > 0) {
+                    paginationHtml += `<button class="join-item btn" ${
+                        response.prev_page_url
+                            ? `onclick="window.loadPodesData(${
+                                  response.current_page - 1
+                              }, ${isSearch})"`
+                            : "disabled"
+                    }>«</button>`;
+
+                    const totalPages = response.last_page;
+                    const currentPage = response.current_page;
+                    let startPage = Math.max(currentPage - 2, 1);
+                    let endPage = Math.min(currentPage + 2, totalPages);
+
+                    if (startPage > 1) {
+                        paginationHtml += `<button class="join-item btn" onclick="window.loadPodesData(1, ${isSearch})">1</button>`;
+                        if (startPage > 2) {
+                            paginationHtml += `<button class="join-item text-white btn btn-disabled">...</button>`;
+                        }
                     }
-                });
+
+                    for (let i = startPage; i <= endPage; i++) {
+                        paginationHtml += `<button class="join-item btn ${
+                            i === currentPage ? "btn-active" : ""
+                        }" onclick="window.loadPodesData(${i}, ${isSearch})">${i}</button>`;
+                    }
+
+                    if (endPage < totalPages) {
+                        if (endPage < totalPages - 1) {
+                            paginationHtml += `<button class="join-item btn btn-disabled text-white">...</button>`;
+                        }
+                        paginationHtml += `<button class="join-item btn" onclick="window.loadPodesData(${totalPages}, ${isSearch})">${totalPages}</button>`;
+                    }
+
+                    paginationHtml += `<button class="join-item btn" ${
+                        response.next_page_url
+                            ? `onclick="window.loadPodesData(${
+                                  response.current_page + 1
+                              }, ${isSearch})"`
+                            : "disabled"
+                    }>»</button>`;
+                }
+
                 $("#pagination").html(paginationHtml);
             },
             error: function (xhr, status, error) {
