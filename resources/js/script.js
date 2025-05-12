@@ -157,6 +157,12 @@ $(document).ready(function () {
             url: url,
             method: method,
             data: data,
+            beforeSend: function () {
+                $("#loadingIndicator").removeClass("hidden"); // Tampilkan spinner
+                $("#podesTable tbody").html(""); // Kosongkan tabel sementara
+                $("#pagination").html(""); // Kosongkan pagination sementara
+                $("#notFoundMessage").addClass("hidden"); // Sembunyikan pesan not found
+            },
             success: function (response) {
                 // Populate table
                 let tableContent = "";
@@ -226,6 +232,9 @@ $(document).ready(function () {
                 }
 
                 $("#pagination").html(paginationHtml);
+            },
+            complete: function () {
+                $("#loadingIndicator").addClass("hidden"); // Sembunyikan spinner
             },
             error: function (xhr, status, error) {
                 console.error("Error:", error);

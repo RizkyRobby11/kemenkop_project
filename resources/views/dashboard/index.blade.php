@@ -102,6 +102,9 @@
                     </div>
                 </div>
 
+                <div id="loadingIndicator" class="hidden flex justify-center my-6">
+                    <span class="loading loading-spinner loading-lg text-white"></span>
+                </div>
 
                 <!-- Pagination -->
                 <nav aria-label="Page navigation" class="mt-4 flex justify-center">
