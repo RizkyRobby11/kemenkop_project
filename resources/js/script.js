@@ -168,22 +168,46 @@ $(document).ready(function () {
                 let tableContent = "";
 
                 if (response.data.length === 0) {
-                    // Kosongkan isi tabel dan tampilkan pesan
                     $("#notFoundMessage").removeClass("hidden");
                 } else {
                     $("#notFoundMessage").addClass("hidden");
 
                     response.data.forEach((item) => {
                         let row = "<tr>";
-                        Object.keys(item).forEach((key) => {
+                        let i = 0;
+                        for (let key in item) {
+                            if (i >= 5) break; // hanya sampai kolom ke-5
                             row += `<td>${item[key]}</td>`;
-                        });
+                            i++;
+                        }
                         row += "</tr>";
                         tableContent += row;
                     });
                 }
 
                 $("#podesTable tbody").html(tableContent);
+
+                // let potensialDesaContent = "";
+                // response.data.forEach((item) => {
+                //     Object.keys(item).forEach((key) => {
+                //         if (
+                //             key.includes(
+                //                 "INDUSTRI MIKRO DAN KECIL KULIT BARANG DARI KULIT DAN ALAS KAKI TAS SEPATU SANDAL IKAT PINGGANG DLL"
+                //             ) &&
+                //             item[key] > 0
+                //         ) {
+                //             potensialDesaContent += `
+                //     <tr>
+                //         <td>${item.nama_desa || "Tidak Ada Nama Desa"}</td>
+                //         <td>${key}</td>
+                //         <td>${item[key]}</td>
+                //     </tr>
+                // `;
+                //         }
+                //     });
+                // });
+
+                // $("#potensialDesaTable tbody").html(potensialDesaContent);
 
                 // Lanjutkan dengan membuat pagination hanya jika ada data
                 let paginationHtml = "";
