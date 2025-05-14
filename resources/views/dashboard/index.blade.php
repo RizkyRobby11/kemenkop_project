@@ -81,9 +81,9 @@
                                 <th class="px-4 py-3">Nama Kecamatan</th>
                                 <th class="px-4 py-3">Nama Desa</th>
                                 <th class="px-4 py-3">Kode Desa/Kelurahan</th>
-                                @foreach ($labels as $label)
+                                {{-- @foreach ($labels as $label)
                                     <th class="px-4 py-3">{{ $label->{'COL 2'} }}</th>
-                                @endforeach
+                                @endforeach --}}
                             </tr>
                         </thead>
                         <tbody class="divide-y divide-gray-200">
@@ -115,6 +115,23 @@
                         <button class="join-item btn">»</button>
                     </div>
                 </nav>
+
+                <!-- Tabel Potensial Desa -->
+                <div class="mt-6 bg-white overflow-x-auto rounded-xl shadow-lg">
+                    <table class="table min-w-max text-sm text-left text-gray-700 bg-white border border-gray-200"
+                        id="potensialDesaTable">
+                        <thead class="bg-gray-100 text-gray-800 uppercase text-xs">
+                            <tr>
+                                @foreach ($labels as $label)
+                                    <th class="px-4 py-3">{{ $label->{'COL 2'} }}</th>
+                                @endforeach
+                            </tr>
+                        </thead>
+                        <tbody class="divide-y divide-gray-200">
+                            <!-- Data akan dimasukkan melalui JavaScript -->
+                        </tbody>
+                    </table>
+                </div>
             </div>
         </div>
     </div>
