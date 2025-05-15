@@ -10,6 +10,39 @@
     <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
     @vite('resources/css/app.css')
     @vite('resources/js/app.js')
+
+    {{-- <script>
+        $(document).ready(function() {
+            $.ajax({
+                url: 'http://127.0.0.1:8000/provinsi }}',
+                method: 'GET',
+                dataType: 'json',
+                beforeSend: function() {
+                    $("#loadingIndicator").removeClass("hidden"); // Tampilkan spinner
+                    $("#podesTable tbody").html(""); // Kosongkan tabel sementara
+                    $("#pagination").html(""); // Kosongkan pagination sementara
+                    $("#notFoundMessage").addClass("hidden"); // Sembunyikan pesan not found
+                },
+                success: function(response) {
+                    console.log("Provinsi data:", response);
+                    let tablePodes = $("#podes");
+                    let content = "";
+                    response.forEach(function(item) {
+                        content += `<tr>
+                            <td>${item['nama_provinsi']}</td>
+                        </tr>`;
+                    });
+
+                    tablePodes.html(content);
+                },
+
+                error: function(xhr, status, error) {
+                    console.error("Error:", error);
+                    alert("Terjadi kesalahan saat memuat data");
+                },
+            });
+        });
+    </script> --}}
 </head>
 
 <body class="font-[Inter]">
@@ -106,6 +139,26 @@
                     <span class="loading loading-spinner loading-lg text-white"></span>
                 </div>
 
+
+
+                <!-- Tabel Potensial Desa -->
+                <div class="mt-6 bg-white overflow-x-auto rounded-xl shadow-lg">
+                    <table class="table min-w-max text-sm text-left text-gray-700 bg-white border border-gray-200"
+                        id="potensialDesaTable">
+                        <thead class="bg-gray-100 text-gray-800 uppercase text-xs">
+                            <tr>
+                                <th class="px-4 py-3">Nama Desa/Kelurahan</th>
+                                @foreach ($labels as $label)
+                                    <th class="px-4 py-3">{{ $label->{'COL 2'} }}</th>
+                                @endforeach
+                            </tr>
+                        </thead>
+                        <tbody class="divide-y divide-gray-200" id="podes">
+
+                        </tbody>
+                    </table>
+                </div>
+
                 <!-- Pagination -->
                 <nav aria-label="Page navigation" class="mt-4 flex justify-center">
                     <div id="pagination" class="join">
@@ -115,23 +168,6 @@
                         <button class="join-item btn">»</button>
                     </div>
                 </nav>
-
-                <!-- Tabel Potensial Desa -->
-                <div class="mt-6 bg-white overflow-x-auto rounded-xl shadow-lg">
-                    <table class="table min-w-max text-sm text-left text-gray-700 bg-white border border-gray-200"
-                        id="potensialDesaTable">
-                        <thead class="bg-gray-100 text-gray-800 uppercase text-xs">
-                            <tr>
-                                @foreach ($labels as $label)
-                                    <th class="px-4 py-3">{{ $label->{'COL 2'} }}</th>
-                                @endforeach
-                            </tr>
-                        </thead>
-                        <tbody class="divide-y divide-gray-200">
-                            <!-- Data akan dimasukkan melalui JavaScript -->
-                        </tbody>
-                    </table>
-                </div>
             </div>
         </div>
     </div>
