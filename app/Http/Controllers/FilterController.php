@@ -60,6 +60,7 @@ class FilterController extends Controller
 
     public function getPodesByFilter(Request $request)
     {
+        $kodepodes = KodePodes::all();
         $podes = Podes::query()
             ->when($request->desa_kelurahan, function ($query) use ($request) {
                 $query->whereHas('desaKelurahan', function ($q) use ($request) {
@@ -83,19 +84,30 @@ class FilterController extends Controller
             })
             ->paginate($request->per_page ?? 10);
 
-        // modifikasi hasil paginasi
-        $podes->getCollection()->transform(function ($item) {
-            return collect($item->toArray())
-            ->prepend($item->desaKelurahan->nama_desa_kelurahan ?? null, 'nama_desa_kelurahan')
-            ->prepend($item->desaKelurahan->kecamatan->nama_kecamatan ?? null, 'nama_kecamatan')
-            ->prepend($item->desaKelurahan->kecamatan->kabupatenKota->nama_kabupaten_kota ?? null, 'nama_kabupaten_kota')
-            ->prepend($item->desaKelurahan->kecamatan->kabupatenKota->provinsi->nama_provinsi ?? null, 'nama_provinsi')
-                ->all();
+        // Transform pagination results
+        $podes->getCollection()->transform(function ($item) use ($kodepodes) {
+            $podesArray = $item->toArray();
+            $transformedData = [
+                'Provinsi' => $item->desaKelurahan->kecamatan->kabupatenKota->provinsi->nama_provinsi ?? null,
+                'Kabupaten' => $item->desaKelurahan->kecamatan->kabupatenKota->nama_kabupaten_kota ?? null,
+                'Kecamatan' => $item->desaKelurahan->kecamatan->nama_kecamatan ?? null,
+                'Desa' => $item->desaKelurahan->nama_desa_kelurahan ?? null,
+                'Kode Desa' => $item->kode_desa_kelurahan
+            ];
+
+            // Add PODES data with descriptions
+            foreach ($kodepodes as $kode) {
+                $columnName = $kode->{'COL 1'};
+                if (isset($podesArray[$columnName])) {
+                    $transformedData[$kode->{'COL 2'}] = $podesArray[$columnName];
+                }
+            }
+
+            return $transformedData;
         });
 
         return response()->json($podes);
     }
-
     public function getPodesBySearch(Request $request)
     {
         // Validasi input search
