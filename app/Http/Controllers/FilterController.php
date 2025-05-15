@@ -94,14 +94,14 @@ public function getPodesByFilter(Request $request)
             'Kecamatan' => $item->desaKelurahan->kecamatan->nama_kecamatan ?? null,
             'Desa' => $item->desaKelurahan->nama_desa_kelurahan ?? null,
             'Kode Desa' => $item->kode_desa_kelurahan,
-            'Industri' => [] // Tambahkan object industri
+            'podes' => [] // Tambahkan object podes
         ];
 
-        // Add PODES data with descriptions into Industri object
+        // Add PODES data with descriptions into podes object
         foreach ($kodepodes as $kode) {
             $columnName = $kode->{'COL 1'};
             if (isset($podesArray[$columnName])) {
-                $transformedData['Industri'][] = [
+                $transformedData['podes'][] = [
                     'nama' => $kode->{'COL 2'},
                     'nilai' => $podesArray[$columnName]
                 ];

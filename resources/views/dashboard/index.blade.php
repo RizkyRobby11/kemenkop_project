@@ -114,16 +114,26 @@
                                 <th class="px-4 py-3">Nama Kecamatan</th>
                                 <th class="px-4 py-3">Nama Desa</th>
                                 <th class="px-4 py-3">Kode Desa/Kelurahan</th>
-                                {{-- @foreach ($labels as $label)
-                                    <th class="px-4 py-3">{{ $label->{'COL 2'} }}</th>
-                                @endforeach --}}
                             </tr>
                         </thead>
                         <tbody class="divide-y divide-gray-200">
-                            {{-- Isi data akan dimasukkan via JavaScript atau Blade --}}
                         </tbody>
                     </table>
                 </div>
+
+                <div class="mt-6 bg-white overflow-x-auto rounded-xl shadow-lg">
+    <table class="table min-w-max text-sm text-left text-gray-700 bg-white border border-gray-200" id="filteredTable">
+        <thead class="bg-gray-100 text-gray-800 uppercase text-xs">
+            <tr>
+                <th class="px-4 py-3">Nama</th>
+                <th class="px-4 py-3">Nilai</th>
+            </tr>
+        </thead>
+        <tbody class="divide-y divide-gray-200">
+            <!-- Data akan dimasukkan via JavaScript -->
+        </tbody>
+    </table>
+</div>
 
                 <div id="notFoundMessage"
                     class="hidden mt-6 mx-auto max-w-md bg-red-50 border border-red-200 text-red-800 p-4 rounded-lg shadow text-center text-sm items-center justify-center gap-4">
@@ -141,23 +151,7 @@
 
 
 
-                <!-- Tabel Potensial Desa -->
-                <div class="mt-6 bg-white overflow-x-auto rounded-xl shadow-lg">
-                    <table class="table min-w-max text-sm text-left text-gray-700 bg-white border border-gray-200"
-                        id="potensialDesaTable">
-                        <thead class="bg-gray-100 text-gray-800 uppercase text-xs">
-                            <tr>
-                                <th class="px-4 py-3">Nama Desa/Kelurahan</th>
-                                @foreach ($labels as $label)
-                                    <th class="px-4 py-3">{{ $label->{'COL 2'} }}</th>
-                                @endforeach
-                            </tr>
-                        </thead>
-                        <tbody class="divide-y divide-gray-200" id="podes">
-
-                        </tbody>
-                    </table>
-                </div>
+                <!-- Tabel Potensial Desa --
 
                 <!-- Pagination -->
                 <nav aria-label="Page navigation" class="mt-4 flex justify-center">
