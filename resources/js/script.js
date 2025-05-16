@@ -5,40 +5,67 @@ $(document).ready(function () {
             method: "GET",
             data: { desa_kelurahan: desaKelurahan }, // Kirim parameter desa_kelurahan
             beforeSend: function () {
-                $("#filteredTable tbody").html(
-                    "<tr><td colspan='2'>Loading...</td></tr>"
-                ); // Tampilkan pesan loading
-                $("#filteredTable").addClass("hidden"); // Sembunyikan tabel sementara
+                $("#filteredCardWrapper").html(
+                    `<div class="card w-96 bg-base-100 shadow-sm mx-auto my-8">
+                    <div class="card-body">
+                        <div class="animate-pulse h-8 w-1/2 bg-gray-200 rounded mb-4"></div>
+                        <ul class="mt-6 flex flex-col gap-2 text-xs">
+                            <li class="h-4 bg-gray-100 rounded"></li>
+                            <li class="h-4 bg-gray-100 rounded"></li>
+                            <li class="h-4 bg-gray-100 rounded"></li>
+                        </ul>
+                    </div>
+                </div>`
+                );
             },
             success: function (response) {
-                let tableContent = "";
-                let divTableContainer = $("#filteredTableContainer");
+                // Ambil nama desa dari filter yang dipilih user
+                const namaDesa = $("#desaSelect option:selected").text();
 
-                if (response.data.length === 0) {
-                    tableContent = `<tr><td colspan='2' class="text-center py-3">Tidak ada data</td></tr>`;
-                } else {
+                let potensials = [];
+                if (response.data && response.data.length > 0) {
                     response.data.forEach((item) => {
-                        item.podes.forEach((podes) => {
-                            if (podes.nilai > 0) {
-                                // Hanya tampilkan nilai selain 0
-                                tableContent += `
-                                    <tr>
-                                        <td class="px-4 py-3">${podes.nama}</td>
-                                        <td class="px-4 py-3">${podes.nilai}</td>
-                                    </tr>
-                                `;
-                                divTableContainer.removeClass("hidden"); // Tampilkan tabel
-                            }
-                        });
+                        if (item.podes && Array.isArray(item.podes)) {
+                            item.podes.forEach((podes) => {
+                                if (podes.nilai > 0) {
+                                    potensials.push(`<li>
+                                    <svg xmlns="http://www.w3.org/2000/svg" class="size-4 me-2 inline-block text-success" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" /></svg>
+                                    <span>${podes.nama} <b class="ml-1">${podes.nilai}</b></span>
+                                </li>`);
+                                }
+                            });
+                        }
                     });
                 }
 
-                $("#filteredTable tbody").html(tableContent); // Masukkan data ke tabel
-                $("#filteredTable").removeClass("hidden"); // Tampilkan tabel
+                if (potensials.length === 0) {
+                    potensials.push(`<li>Tidak ada data potensial desa.</li>`);
+                }
+
+                // Render card
+                $("#filteredCardWrapper").html(`
+                <div class="card bg-base-100 w-full shadow-sm mx-auto my-8">
+                  <div class="card-body">
+                    <span class="badge badge-xs badge-warning">Potensi Desa</span>
+                    <div class="flex justify-between">
+                      <h2 class="text-3xl font-bold">${namaDesa}</h2>
+                    </div>
+                    <ul class="mt-6 flex flex-col gap-2 text-xs">
+                      ${potensials.join("")}
+                    </ul>
+                  </div>
+                </div>
+            `);
             },
             error: function (xhr, status, error) {
-                console.error("Error:", error);
-                alert("Terjadi kesalahan saat memuat data");
+                $("#filteredCardWrapper").html(
+                    `<div class="card w-96 bg-base-100 shadow-sm mx-auto my-8">
+                    <div class="card-body">
+                        <h2 class="text-3xl font-bold text-error">Error</h2>
+                        <div class="mt-4 text-sm">Terjadi kesalahan saat memuat data.</div>
+                    </div>
+                </div>`
+                );
             },
         });
     };
@@ -68,6 +95,8 @@ $("#provinsiSelect").change(function () {
         $("#desaSelect")
             .prop("disabled", true)
             .html("<option selected>Pilih Desa/Kelurahan</option>");
+        $("#filteredTableBody").html("");
+        $("#filteredTableContainer").addClass("hidden");
         return;
     }
 
@@ -156,6 +185,7 @@ $("#kecamatanSelect").change(function () {
 // Event handler saat desa dipilih
 $("#desaSelect").change(function () {
     const kodeDesa = $(this).val();
+    const namaDesa = $("#desaSelect option:selected").text();
 
     // Jika desa tidak dipilih atau dropdown disabled, kosongkan dan sembunyikan div filteredTableContainer
     if (
@@ -167,6 +197,9 @@ $("#desaSelect").change(function () {
         $("#filteredTableContainer").addClass("hidden");
         return;
     }
+
+    // Set judul H2 sesuai nama desa yang dipilih
+    $("#filteredTableContainer h2").text("POTENSIAL DARI DESA : " + namaDesa);
 
     // Jika desa dipilih dan input enabled, tampilkan div filteredTableContainer
     $("#filteredTableContainer").removeClass("hidden");
