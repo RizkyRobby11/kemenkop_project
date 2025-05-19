@@ -68,7 +68,7 @@ $(document).ready(function () {
                     <div class="card w-full max-w-md bg-white shadow-lg mx-auto my-8 rounded-xl border border-gray-100 transition-transform hover:scale-[1.02]">
                         <div class="card-body p-6">
                             <span class="badge badge-info badge-sm mb-2">Potensi Desa</span>
-                            <h2 class="text-2xl font-bold text-gray-800 mb-1">${namaDesa}</h2>
+                            <h2 class="text-2xl font-bold text-gray-800 mb-1">Desa/Kelurahan ${namaDesa}</h2>
                             <ul class="mt-4 flex flex-col gap-3 text-sm">
                                 ${potensials.join("")}
                             </ul>
