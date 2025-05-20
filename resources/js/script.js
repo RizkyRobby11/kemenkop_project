@@ -139,11 +139,67 @@ $(document).ready(function () {
         });
     }
 
+    function getPodesByWilayah(kodeWilayah, isDesa = false) {
+        $.ajax({
+            url: `/podes/${kodeWilayah}`,
+            method: "GET",
+            success: function (response) {
+                let summaryArr = Array.isArray(response.summary)
+                    ? response.summary
+                    : [];
+                console.log(summaryArr);
+                // Jika desa, ambil nama desa dari summary atau dari dropdown
+                let title = "-";
+                if (isDesa) {
+                    title = $("#desaSelect option:selected").text();
+                } else if (summaryArr.length > 0) {
+                    title = summaryArr[1].nilai;
+                    console.log(title);
+                }
+                // List mulai index ke-1
+                let summaryList = summaryArr
+                    .slice(2)
+                    .filter((item) => Number(item.nilai) !== 0)
+                    .map(
+                        (item) => `
+                    <li class="flex items-center">
+                        <span>👉 ${item.nama || "-"} <b class="ml-1">${
+                            item.nilai ?? ""
+                        }</b></span>
+                    </li>
+                `
+                    )
+                    .join("");
+                if (summaryArr.length > 0) {
+                    $("#filteredTableContainer").removeClass("hidden").html(`
+                    <div class="card w-full max-w-md bg-white shadow-lg mx-auto my-8 rounded-xl border border-gray-100">
+                        <div class="card-body p-6">
+                            <span class="badge badge-info badge-sm mb-2">${
+                                isDesa ? "Potensi Desa/Kelurahan" : "Potensi"
+                            }</span>
+                            <h2 class="text-xl font-bold mb-2">${title}</h2>
+                            <ul class="mt-4 flex flex-col gap-3 text-sm">
+                                ${summaryList}
+                            </ul>
+                        </div>
+                    </div>
+                `);
+                } else {
+                    $("#filteredTableContainer").addClass("hidden").html("");
+                }
+            },
+            error: function () {
+                $("#filteredTableContainer").addClass("hidden").html("");
+            },
+        });
+    }
+
     // =========================
     // Dropdown Event Handlers
     // =========================
     $("#provinsiSelect").change(function () {
         const kodeProvinsi = $(this).val();
+        getPodesByWilayah(kodeProvinsi);
         resetDropdown($("#kabupatenSelect"), "Pilih Kabupaten");
         resetDropdown($("#kecamatanSelect"), "Pilih Kecamatan");
         resetDropdown($("#desaSelect"), "Pilih Desa/Kelurahan");
@@ -159,6 +215,7 @@ $(document).ready(function () {
 
     $("#kabupatenSelect").change(function () {
         const kodeKabupaten = $(this).val();
+        getPodesByWilayah(kodeKabupaten);
         resetDropdown($("#kecamatanSelect"), "Pilih Kecamatan");
         resetDropdown($("#desaSelect"), "Pilih Desa/Kelurahan");
         $("#filteredTableContainer").addClass("hidden"); // Tambahkan baris ini
@@ -173,6 +230,7 @@ $(document).ready(function () {
 
     $("#kecamatanSelect").change(function () {
         const kodeKecamatan = $(this).val();
+        getPodesByWilayah(kodeKecamatan);
         resetDropdown($("#desaSelect"), "Pilih Desa/Kelurahan");
         $("#filteredTableContainer").addClass("hidden"); // Tambahkan baris ini
         if (kodeKecamatan === "Pilih Kecamatan") {
@@ -194,8 +252,7 @@ $(document).ready(function () {
             $("#filteredTableContainer").addClass("hidden");
             return;
         }
-        $("#filteredTableContainer").removeClass("hidden");
-        window.loadFilteredData(kodeDesa);
+        window.loadPodesData(1); // Panggil loadPodesData, bukan loadFilteredData
     });
 
     // =========================
@@ -292,6 +349,55 @@ $(document).ready(function () {
                     }>»</button>`;
                 }
                 $("#pagination").html(paginationHtml);
+                // Tambahkan ini untuk summary desa
+                const desa = $("#desaSelect").val();
+                if (desa && desa !== "Pilih Desa/Kelurahan") {
+                    // Ambil nama desa dari dropdown
+                    const namaDesa = $("#desaSelect option:selected").text();
+                    let potensials = [];
+
+                    if (response.data && response.data.length > 0) {
+                        response.data.forEach((item) => {
+                            if (Array.isArray(item.podes)) {
+                                item.podes.forEach((podes) => {
+                                    if (podes.nilai > 0) {
+                                        potensials.push(`
+                                <li class="flex items-center">
+                                    <span>👉 ${podes.nama} <b class="ml-1">${podes.nilai}</b></span>
+                                </li>
+                            `);
+                                    }
+                                });
+                            }
+                        });
+                    }
+
+                    if (potensials.length === 0) {
+                        potensials.push(`
+                <li class="flex items-center opacity-60">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="size-4 mr-2 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
+                    </svg>
+                    <span>Tidak ada data potensial desa.</span>
+                </li>
+            `);
+                    }
+
+                    $("#filteredTableContainer").removeClass("hidden").html(`
+            <div class="card w-full max-w-md bg-white shadow-lg mx-auto my-8 rounded-xl border border-gray-100">
+                <div class="card-body p-6">
+                    <span class="mb-2 text-2xl">Potensi dari Desa/Kelurahan :</span>
+                    <h2 class="text-2xl font-bold text-gray-800 mb-1">${namaDesa}</h2>
+                    <hr>
+                    <ul class="mt-4 flex flex-col gap-3 text-sm">
+                        ${potensials.join("")}
+                    </ul>
+                </div>
+            </div>
+        `);
+                } else {
+                    $("#filteredTableContainer").addClass("hidden").html("");
+                }
             },
             complete: function () {
                 $("#loadingIndicator").addClass("hidden");
@@ -302,69 +408,63 @@ $(document).ready(function () {
             },
         });
 
-        if (provinsi && provinsi !== "Pilih Provinsi") {
+        function getPodesByWilayah(kodeWilayah) {
             $.ajax({
-                url: `http://127.0.0.1:8000/podes/${provinsi}`,
+                url: `/podes/${kodeWilayah}`,
                 method: "GET",
-                beforeSend: function () {
-                    $("#loadingIndicator").removeClass("hidden");
-                },
                 success: function (response) {
-                    // Pastikan summary adalah array
-                    let summaryArr = [];
-                    if (Array.isArray(response.summary)) {
-                        summaryArr = response.summary;
-                    } else if (response.summary) {
-                        summaryArr = [response.summary];
-                    }
-
-                    // Jika summary ada, render ke dalam card
-                    if (summaryArr.length > 0) {
-                        let summaryList = summaryArr
-                            .slice(1)
-                            .map((item) => {
-                                `
-            <li class="flex items-center">
-                <svg xmlns="http://www.w3.org/2000/svg" class="size-4 mr-2 text-info" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
-                </svg>
-                <span>${item.nama_provinsi || "-"} <b class="ml-1">${
-                                    item.nilai ?? ""
-                                }</b></span>
-            </li>
-        `;
-                            })
+                    let data = Array.isArray(response.summary)
+                        ? response.summary.slice(1)
+                        : [];
+                    // Render summary ke card, misal:
+                    if (data.length > 0) {
+                        let summaryList = data
+                            .map(
+                                (item) => `
+                        <li>${item.nama} <b>${item.nilai}</b></li>
+                    `
+                            )
                             .join("");
-                        console.log(summaryList);
-                        // console.log(item);
-
                         $("#filteredTableContainer").removeClass("hidden")
                             .html(`
-                        <div class="card w-full max-w-md bg-white shadow-lg mx-auto my-8 rounded-xl border border-gray-100">
-                            <div class="card-body p-6">
-                                <span class="badge badge-info badge-sm mb-2">Summary Provinsi</span>
-                                <ul class="mt-4 flex flex-col gap-3 text-sm">
-                                    ${summaryList}p
-                                </ul>
-                            </div>
+                        <div class="card p-4">
+                            <ul>${summaryList}</ul>
                         </div>
                     `);
                     } else {
-                        // Jika summary kosong, sembunyikan card
                         $("#filteredTableContainer")
                             .addClass("hidden")
                             .html("");
                     }
                 },
-                complete: function () {
-                    $("#loadingIndicator").addClass("hidden");
-                },
                 error: function () {
-                    console.error("Error saat memuat data tabel utama");
-                    alert("Terjadi kesalahan saat memuat data");
+                    console.error(
+                        "Error saat memuat data tabel utama ajax get podes"
+                    );
                 },
             });
         }
+
+        // $.ajax({
+        //     url: `http://127.0.0.1:8000/podes/${provinsi}/${kabupaten}/${kecamatan}/${desa}`,
+        //     method: "GET",
+        //     beforeSend: function () {
+        //         $("#loadingIndicator").removeClass("hidden");
+        //     },
+        //     success: function (response) {
+        //         let data = response.summary.slice(1);
+        //         data.forEach((item) => {
+        //             console.log(item);
+        //         });
+        //     },
+        //     complete: function () {
+        //         $("#loadingIndicator").addClass("hidden");
+        //     },
+        //     error: function () {
+        //         console.error("Error saat memuat data tabel utama");
+        //         alert("Terjadi kesalahan saat memuat data");
+        //     },
+        // });
     };
 
     // =========================
