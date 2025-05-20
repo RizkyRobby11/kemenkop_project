@@ -10,39 +10,6 @@
     <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
     @vite('resources/css/app.css')
     @vite('resources/js/app.js')
-
-    {{-- <script>
-        $(document).ready(function() {
-            $.ajax({
-                url: 'http://127.0.0.1:8000/provinsi }}',
-                method: 'GET',
-                dataType: 'json',
-                beforeSend: function() {
-                    $("#loadingIndicator").removeClass("hidden"); // Tampilkan spinner
-                    $("#podesTable tbody").html(""); // Kosongkan tabel sementara
-                    $("#pagination").html(""); // Kosongkan pagination sementara
-                    $("#notFoundMessage").addClass("hidden"); // Sembunyikan pesan not found
-                },
-                success: function(response) {
-                    console.log("Provinsi data:", response);
-                    let tablePodes = $("#podes");
-                    let content = "";
-                    response.forEach(function(item) {
-                        content += `<tr>
-                            <td>${item['nama_provinsi']}</td>
-                        </tr>`;
-                    });
-
-                    tablePodes.html(content);
-                },
-
-                error: function(xhr, status, error) {
-                    console.error("Error:", error);
-                    alert("Terjadi kesalahan saat memuat data");
-                },
-            });
-        });
-    </script> --}}
 </head>
 
 <body class="font-[Inter]">
@@ -102,10 +69,7 @@
                     </form> --}}
                 </div>
 
-
-
                 <div class="mt-2 bg-white overflow-x-auto rounded-xl shadow-lg">
-
                     <table class="table min-w-max text-sm text-left text-gray-700 bg-white border border-gray-200"
                         id="podesTable">
                         <thead class="bg-gray-100 text-gray-800 uppercase text-xs">
@@ -132,26 +96,9 @@
                     </div>
                 </nav>
 
-                {{-- <div class="mt-6 bg-white hidden overflow-x-auto rounded-xl shadow-lg" id="filteredTableContainer">
-                    <h2 class="p-10"></h2>
-                    <table class="table min-w-max text-sm text-left text-gray-700 bg-white border border-gray-200"
-                        id="filteredTable">
-                        <thead class="bg-gray-100 text-gray-800 uppercase text-xs">
-                            <tr>
-                                <th class="px-4 py-3">Nama</th>
-                                <th class="px-4 py-3">Nilai</th>
-                            </tr>
-                        </thead>
-                        <tbody class="divide-y divide-gray-200" id="filteredTableBody">
-                            <!-- Data akan dimasukkan via JavaScript -->
-                        </tbody>
-                    </table>
-                </div> --}}
-
                 <div class="mt-6 hidden overflow-x-auto rounded-xl" id="filteredTableContainer">
                     <div id="filteredCardWrapper"></div>
                 </div>
-
 
                 <div id="notFoundMessage"
                     class="hidden mt-6 mx-auto max-w-md bg-red-50 border border-red-200 text-red-800 p-4 rounded-lg shadow text-center text-sm items-center justify-center gap-4">
@@ -166,9 +113,6 @@
                 <div id="loadingIndicator" class="hidden flex justify-center my-6">
                     <span class="loading loading-spinner loading-lg text-white"></span>
                 </div>
-
-
-
             </div>
         </div>
     </div>

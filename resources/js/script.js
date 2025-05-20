@@ -41,10 +41,8 @@ $(document).ready(function () {
                                 if (podes.nilai > 0) {
                                     potensials.push(`
                                         <li class="flex items-center">
-                                            <svg xmlns="http://www.w3.org/2000/svg" class="size-4 mr-2 text-success" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
-                                            </svg>
-                                            <span>${podes.nama} <b class="ml-1">${podes.nilai}</b></span>
+                                            
+                                            <span>👉 ${podes.nama} <b class="ml-1">${podes.nilai}</b></span>
                                         </li>
                                     `);
                                 }
@@ -65,10 +63,11 @@ $(document).ready(function () {
                 }
 
                 $wrapper.html(`
-                    <div class="card w-full max-w-md bg-white shadow-lg mx-auto my-8 rounded-xl border border-gray-100 transition-transform hover:scale-[1.02]">
+                    <div class="card w-full max-w-md bg-white shadow-lg mx-auto my-8 rounded-xl border border-gray-100">
                         <div class="card-body p-6">
-                            <span class="badge badge-info badge-sm mb-2">Potensi Desa</span>
-                            <h2 class="text-2xl font-bold text-gray-800 mb-1">Desa/Kelurahan ${namaDesa}</h2>
+                            <span class=" mb-2 text-2xl">Potensi dari Desa/Kelurahan :</span>
+                            <h2 class="text-2xl font-bold text-gray-800 mb-1">${namaDesa}</h2>
+                            <hr>
                             <ul class="mt-4 flex flex-col gap-3 text-sm">
                                 ${potensials.join("")}
                             </ul>
@@ -228,7 +227,7 @@ $(document).ready(function () {
                 $("#notFoundMessage").addClass("hidden");
             },
             success: function (response) {
-                console.log(response);
+                // console.log(response);
                 let tableContent = "";
                 if (response.data.length === 0) {
                     $("#notFoundMessage").removeClass("hidden");
@@ -302,6 +301,70 @@ $(document).ready(function () {
                 alert("Terjadi kesalahan saat memuat data");
             },
         });
+
+        if (provinsi && provinsi !== "Pilih Provinsi") {
+            $.ajax({
+                url: `http://127.0.0.1:8000/podes/${provinsi}`,
+                method: "GET",
+                beforeSend: function () {
+                    $("#loadingIndicator").removeClass("hidden");
+                },
+                success: function (response) {
+                    // Pastikan summary adalah array
+                    let summaryArr = [];
+                    if (Array.isArray(response.summary)) {
+                        summaryArr = response.summary;
+                    } else if (response.summary) {
+                        summaryArr = [response.summary];
+                    }
+
+                    // Jika summary ada, render ke dalam card
+                    if (summaryArr.length > 0) {
+                        let summaryList = summaryArr
+                            .slice(1)
+                            .map((item) => {
+                                `
+            <li class="flex items-center">
+                <svg xmlns="http://www.w3.org/2000/svg" class="size-4 mr-2 text-info" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
+                </svg>
+                <span>${item.nama_provinsi || "-"} <b class="ml-1">${
+                                    item.nilai ?? ""
+                                }</b></span>
+            </li>
+        `;
+                            })
+                            .join("");
+                        console.log(summaryList);
+                        // console.log(item);
+
+                        $("#filteredTableContainer").removeClass("hidden")
+                            .html(`
+                        <div class="card w-full max-w-md bg-white shadow-lg mx-auto my-8 rounded-xl border border-gray-100">
+                            <div class="card-body p-6">
+                                <span class="badge badge-info badge-sm mb-2">Summary Provinsi</span>
+                                <ul class="mt-4 flex flex-col gap-3 text-sm">
+                                    ${summaryList}p
+                                </ul>
+                            </div>
+                        </div>
+                    `);
+                    } else {
+                        // Jika summary kosong, sembunyikan card
+                        $("#filteredTableContainer")
+                            .addClass("hidden")
+                            .html("");
+                    }
+                },
+                complete: function () {
+                    $("#loadingIndicator").addClass("hidden");
+                },
+                error: function () {
+                    console.error("Error saat memuat data tabel utama");
+                    alert("Terjadi kesalahan saat memuat data");
+                },
+            });
+        }
     };
 
     // =========================
