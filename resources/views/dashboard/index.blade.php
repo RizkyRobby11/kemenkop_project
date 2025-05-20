@@ -88,7 +88,7 @@
                     <!-- Form Search -->
                     <form action="/search" method="POST" class="flex justify-center lg:ml-4 mt-4 lg:mt-0 gap-2">
                         <input type="text" name="search" id="search" class="input input-bordered w-64"
-                            placeholder="Cari sesuatu...">
+                            placeholder="Cari sesuat
                         <button type="submit" class="btn">
                             <svg class="h-[1em] opacity-50" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
                                 <g stroke-linejoin="round" stroke-linecap="round" stroke-width="2.5" fill="none"
