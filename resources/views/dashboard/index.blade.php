@@ -86,7 +86,7 @@
                     </div>
 
                     <!-- Form Search -->
-                    <form action="/search" method="POST" class="flex justify-center lg:ml-4 mt-4 lg:mt-0 gap-2">
+                    {{-- <form action="/search" method="POST" class="flex justify-center lg:ml-4 mt-4 lg:mt-0 gap-2">
                         <input type="text" name="search" id="search" class="input input-bordered w-64"
                             placeholder="Cari sesuat
                         <button type="submit" class="btn">
@@ -99,12 +99,13 @@
                             </svg>
                         </button>
                         @csrf
-                    </form>
+                    </form> --}}
                 </div>
 
 
 
                 <div class="mt-2 bg-white overflow-x-auto rounded-xl shadow-lg">
+
                     <table class="table min-w-max text-sm text-left text-gray-700 bg-white border border-gray-200"
                         id="podesTable">
                         <thead class="bg-gray-100 text-gray-800 uppercase text-xs">
@@ -121,19 +122,36 @@
                     </table>
                 </div>
 
-                <div class="mt-6 bg-white overflow-x-auto rounded-xl shadow-lg">
-    <table class="table min-w-max text-sm text-left text-gray-700 bg-white border border-gray-200" id="filteredTable">
-        <thead class="bg-gray-100 text-gray-800 uppercase text-xs">
-            <tr>
-                <th class="px-4 py-3">Nama</th>
-                <th class="px-4 py-3">Nilai</th>
-            </tr>
-        </thead>
-        <tbody class="divide-y divide-gray-200">
-            <!-- Data akan dimasukkan via JavaScript -->
-        </tbody>
-    </table>
-</div>
+                <!-- Pagination -->
+                <nav aria-label="Page navigation" class="mt-4 flex justify-center">
+                    <div id="pagination" class="join">
+                        <!-- Akan diisi dengan JavaScript atau Blade -->
+                        <button class="join-item btn">«</button>
+                        <button class="join-item btn">Page 1</button>
+                        <button class="join-item btn">»</button>
+                    </div>
+                </nav>
+
+                {{-- <div class="mt-6 bg-white hidden overflow-x-auto rounded-xl shadow-lg" id="filteredTableContainer">
+                    <h2 class="p-10"></h2>
+                    <table class="table min-w-max text-sm text-left text-gray-700 bg-white border border-gray-200"
+                        id="filteredTable">
+                        <thead class="bg-gray-100 text-gray-800 uppercase text-xs">
+                            <tr>
+                                <th class="px-4 py-3">Nama</th>
+                                <th class="px-4 py-3">Nilai</th>
+                            </tr>
+                        </thead>
+                        <tbody class="divide-y divide-gray-200" id="filteredTableBody">
+                            <!-- Data akan dimasukkan via JavaScript -->
+                        </tbody>
+                    </table>
+                </div> --}}
+
+                <div class="mt-6 hidden overflow-x-auto rounded-xl" id="filteredTableContainer">
+                    <div id="filteredCardWrapper"></div>
+                </div>
+
 
                 <div id="notFoundMessage"
                     class="hidden mt-6 mx-auto max-w-md bg-red-50 border border-red-200 text-red-800 p-4 rounded-lg shadow text-center text-sm items-center justify-center gap-4">
@@ -151,17 +169,6 @@
 
 
 
-                <!-- Tabel Potensial Desa --
-
-                <!-- Pagination -->
-                <nav aria-label="Page navigation" class="mt-4 flex justify-center">
-                    <div id="pagination" class="join">
-                        <!-- Akan diisi dengan JavaScript atau Blade -->
-                        <button class="join-item btn">«</button>
-                        <button class="join-item btn">Page 1</button>
-                        <button class="join-item btn">»</button>
-                    </div>
-                </nav>
             </div>
         </div>
     </div>
