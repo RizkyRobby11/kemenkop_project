@@ -21,8 +21,4 @@ Route::get("/kabupatenkota/{kode_kabupaten_kota}/kecamatan", [FilterController::
 Route::get("/kecamatan/{kode_kecamatan}/desakelurahan", [FilterController::class, "getDesaKelurahanByKecamatan"]);
 
 Route::get("/filter", [FilterController::class, "getPodesByFilter"]);
-// Route::get("/search", [FilterController::class, "getPodesBySearch"]);
-// Route::get('/podes-provinsi', [FilterController::class, 'getPodesAllProvinsiIndustri']);
-Route::get('/allPodesByKecamatan/{kecamatan}', [FilterController::class, 'getAllPodesByKecamatan']);
-Route::get('/allPodesByKabupaten/{kabupaten_kota}', [FilterController::class, 'getAllPodesByKabupaten']);
-Route::get('/allPodesByProvinsi/{provinsi}', [FilterController::class, 'getAllPodesByProvinsi']);
+Route::get('/podes/{kodewilayah}' ,[FilterController::class, "getAllPodes"]);
