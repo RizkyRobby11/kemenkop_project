@@ -108,37 +108,38 @@ class PodesService
 
     public function getAllPodesProvinsi()
     {
-    $selectRaw = ['provinsi.kode_provinsi', 'provinsi.nama_provinsi'];
-    $totalColumns = [];
-    foreach ($this->kodepodes as $kodep) {
-        $columnName = $kodep->{'COL 1'};
-        $alias = $kodep->{'COL 2'};
-        $selectRaw[] = DB::raw("SUM($columnName) as `$alias`");
-        $totalColumns[] = $alias;
-    }
-
-    $result = Podes::query()
-        ->join('desa_kelurahan', 'podes.kode_desa_kelurahan', '=', 'desa_kelurahan.kode_desa_kelurahan')
-        ->join('kecamatan', 'desa_kelurahan.kode_kecamatan', '=', 'kecamatan.kode_kecamatan')
-        ->join('kabupaten_kota', 'kecamatan.kode_kabupaten_kota', '=', 'kabupaten_kota.kode_kabupaten_kota')
-        ->join('provinsi', 'kabupaten_kota.kode_provinsi', '=', 'provinsi.kode_provinsi')
-        ->select($selectRaw)
-        ->groupBy('provinsi.kode_provinsi', 'provinsi.nama_provinsi')
-        ->get();
-
-    // Tambahkan total_semua_podes untuk setiap provinsi
-    $result = $result->map(function ($item) use ($totalColumns) {
-        $total = 0;
-        foreach ($totalColumns as $col) {
-            $total += (int) $item->$col;
+    return cache()->remember('summary_podes_per_provinsi', 60 * 60, function () {
+        $selectRaw = ['provinsi.kode_provinsi', 'provinsi.nama_provinsi'];
+        $totalColumns = [];
+        foreach ($this->kodepodes as $kodep) {
+            $columnName = $kodep->{'COL 1'};
+            $alias = $kodep->{'COL 2'};
+            $selectRaw[] = DB::raw("SUM($columnName) as `$alias`");
+            $totalColumns[] = $alias;
         }
-        return [
-            'kode_provinsi' => $item->kode_provinsi,
-            'nama_provinsi' => $item->nama_provinsi,
-            'total_semua_podes' => $total
-        ];
-    });
 
-    return $result->values()->toArray();
+        $result = Podes::query()
+            ->join('desa_kelurahan', 'podes.kode_desa_kelurahan', '=', 'desa_kelurahan.kode_desa_kelurahan')
+            ->join('kecamatan', 'desa_kelurahan.kode_kecamatan', '=', 'kecamatan.kode_kecamatan')
+            ->join('kabupaten_kota', 'kecamatan.kode_kabupaten_kota', '=', 'kabupaten_kota.kode_kabupaten_kota')
+            ->join('provinsi', 'kabupaten_kota.kode_provinsi', '=', 'provinsi.kode_provinsi')
+            ->select($selectRaw)
+            ->groupBy('provinsi.kode_provinsi', 'provinsi.nama_provinsi')
+            ->get();
+
+        $result = $result->map(function ($item) use ($totalColumns) {
+            $total = 0;
+            foreach ($totalColumns as $col) {
+                $total += (int) $item->$col;
+            }
+            return [
+                'kode_provinsi' => $item->kode_provinsi,
+                'nama_provinsi' => $item->nama_provinsi,
+                'total_semua_podes' => $total
+            ];
+        });
+
+        return $result->values()->toArray();
+    });
 }
 }
