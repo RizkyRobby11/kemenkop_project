@@ -103,7 +103,11 @@
                     </div>
                 </nav>
 
-                <div class="my-6 bg-white">
+                <div class="my-6 bg-white rounded-md" id="chartContainer">
+                    <div class="flex justify-center p-2">
+                        <h2 class="text-lg md:text-2xl font-bold text-gray-800">Statistik Potensi berdasarkan Provinsi
+                        </h2>
+                    </div>
                     <canvas id="dummyChart" height="120"></canvas>
                 </div>
 

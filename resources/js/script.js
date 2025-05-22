@@ -187,7 +187,7 @@ $(document).ready(function () {
     function loadProvinsi() {
         $.get("/provinsi", function (data) {
             const $provinsi = $("#provinsiSelect");
-            $provinsi.html("<option selected disabled>Pilih Provinsi</option>");
+            $provinsi.html("<option selected>Pilih Provinsi</option>");
             data.forEach(function (provinsi) {
                 $provinsi.append(
                     `<option value="${provinsi.kode_provinsi}">${provinsi.nama_provinsi}</option>`
@@ -411,12 +411,14 @@ $(document).ready(function () {
         resetDropdown($("#desaSelect"), "Pilih Desa/Kelurahan");
         $("#filteredTableContainer").addClass("hidden"); // Tambahkan baris ini
         if (kodeProvinsi === "Pilih Provinsi") {
+            $("#chartContainer").removeClass("hidden");
             window.loadPodesData(1);
             $("#kabupatenSelect").prop("disabled", true);
             return;
         }
         $("#kabupatenSelect").prop("disabled", false);
         loadKabupaten(kodeProvinsi);
+        $("#chartContainer").addClass("hidden");
         getPodesByWilayah(kodeProvinsi);
         // window.loadPodesData(1);
     });
@@ -433,6 +435,7 @@ $(document).ready(function () {
         }
         $("#kecamatanSelect").prop("disabled", false);
         loadKecamatan(kodeKabupaten);
+        $("#chartContainer").addClass("hidden");
         getPodesByWilayah(kodeKabupaten);
     });
 
@@ -447,6 +450,7 @@ $(document).ready(function () {
         }
         $("#desaSelect").prop("disabled", false);
         loadDesa(kodeKecamatan);
+        $("#chartContainer").addClass("hidden");
         getPodesByWilayah(kodeKecamatan);
     });
 
@@ -636,8 +640,8 @@ $(document).ready(function () {
             const data = [];
             if (Array.isArray(response)) {
                 response.forEach((item) => {
-                    labels.push(item.nama || "-");
-                    data.push(Number(item.nilai) || 0);
+                    labels.push(item.nama_provinsi || "-");
+                    data.push(Number(item.total_semua_podes) || 0);
                 });
             }
             const ctx = document.getElementById("dummyChart").getContext("2d");
@@ -656,7 +660,7 @@ $(document).ready(function () {
                 options: {
                     animation: {
                         duration: 1200, // ms
-                        easing: "easeOutBounce",
+                        easing: "easeOut",
                     },
                     responsive: true,
                     plugins: {
