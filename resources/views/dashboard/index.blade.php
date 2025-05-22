@@ -10,6 +10,7 @@
     <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
     @vite('resources/css/app.css')
     @vite('resources/js/app.js')
+    {{-- <script src="https://cdn.jsdelivr.net/npm/chart.js"></script> --}}
 </head>
 
 <body class="font-[Inter]">
