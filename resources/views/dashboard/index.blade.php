@@ -10,7 +10,8 @@
     <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
     @vite('resources/css/app.css')
     @vite('resources/js/app.js')
-    {{-- <script src="https://cdn.jsdelivr.net/npm/chart.js"></script> --}}
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
 </head>
 
 <body class="font-[Inter]">
@@ -87,6 +88,8 @@
                     </table>
                 </div>
 
+
+
                 <!-- Pagination -->
                 <nav aria-label="Page navigation" class="mt-4 flex justify-center">
                     <div id="pagination" class="join">
@@ -96,6 +99,10 @@
                         <button class="join-item btn">»</button>
                     </div>
                 </nav>
+
+                <div class="my-6 bg-white">
+                    <canvas id="dummyChart" height="120"></canvas>
+                </div>
 
                 <div class="mt-6 hidden overflow-x-auto rounded-xl" id="filteredTableContainer">
                     <div id="filteredCardWrapper"></div>
