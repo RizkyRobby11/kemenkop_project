@@ -139,6 +139,6 @@ class PodesService
         ];
     });
 
-    return $result;
+    return $result->values()->toArray();
 }
 }
