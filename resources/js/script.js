@@ -627,4 +627,31 @@ $(document).ready(function () {
     // =========================
     loadProvinsi();
     window.loadPodesData();
+
+    // Dummy chart di bawah tabel
+    if ($("#dummyChart").length) {
+        const ctx = document.getElementById("dummyChart").getContext("2d");
+        new Chart(ctx, {
+            type: "bar",
+            data: {
+                labels: ["A", "B", "C", "D", "E"],
+                datasets: [
+                    {
+                        label: "Dummy Data",
+                        data: [12, 19, 3, 5, 2],
+                        backgroundColor: "#42aafa",
+                    },
+                ],
+            },
+            options: {
+                responsive: true,
+                plugins: {
+                    legend: { display: false },
+                },
+                scales: {
+                    y: { beginAtZero: true },
+                },
+            },
+        });
+    }
 });
