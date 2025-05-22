@@ -22,3 +22,4 @@ Route::get("/kecamatan/{kode_kecamatan}/desakelurahan", [FilterController::class
 
 Route::get("/filter", [FilterController::class, "getPodesByFilter"]);
 Route::get('/podes/{kodewilayah}' ,[FilterController::class, "getAllPodes"]);
+Route::get('/podes/summary/provinsi',[FilterController::class, "getSummPodesProvinsi"]);
