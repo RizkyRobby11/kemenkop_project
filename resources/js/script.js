@@ -282,7 +282,7 @@ $(document).ready(function () {
                     let endPage = Math.min(currentPage + 2, totalPages);
 
                     if (startPage > 1) {
-                        paginationHtml += `<button class="join-item btn" onclick="window.getPodesByWilayah(${kodeWilayah}, ${isDesa}, 1)">1</button>`;
+                        paginationHtml += `<button class="join-item btn" onclick="window.getPodesByWilayah(1)">1</button>`;
                         if (startPage > 2) {
                             paginationHtml += `<button class="join-item text-white btn btn-disabled">...</button>`;
                         }
@@ -628,30 +628,45 @@ $(document).ready(function () {
     loadProvinsi();
     window.loadPodesData();
 
-    // Dummy chart di bawah tabel
+    // Dummy chart di bawah tabel, data dari API summary provinsi
     if ($("#dummyChart").length) {
-        const ctx = document.getElementById("dummyChart").getContext("2d");
-        new Chart(ctx, {
-            type: "bar",
-            data: {
-                labels: ["A", "B", "C", "D", "E"],
-                datasets: [
-                    {
-                        label: "Dummy Data",
-                        data: [12, 19, 3, 5, 2],
-                        backgroundColor: "#42aafa",
+        $.get("/podes/summary/provinsi", function (response) {
+            // Asumsi response array objek {nama: ..., nilai: ...}
+            const labels = [];
+            const data = [];
+            if (Array.isArray(response)) {
+                response.forEach((item) => {
+                    labels.push(item.nama || "-");
+                    data.push(Number(item.nilai) || 0);
+                });
+            }
+            const ctx = document.getElementById("dummyChart").getContext("2d");
+            new Chart(ctx, {
+                type: "bar",
+                data: {
+                    labels: labels,
+                    datasets: [
+                        {
+                            label: "Total Potensi per Provinsi",
+                            data: data,
+                            backgroundColor: "#42aafa",
+                        },
+                    ],
+                },
+                options: {
+                    animation: {
+                        duration: 1200, // ms
+                        easing: "easeOutBounce",
                     },
-                ],
-            },
-            options: {
-                responsive: true,
-                plugins: {
-                    legend: { display: false },
+                    responsive: true,
+                    plugins: {
+                        legend: { display: false },
+                    },
+                    scales: {
+                        y: { beginAtZero: true },
+                    },
                 },
-                scales: {
-                    y: { beginAtZero: true },
-                },
-            },
+            });
         });
     }
 });
