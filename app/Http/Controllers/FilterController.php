@@ -46,6 +46,11 @@ class FilterController extends Controller
             'summary' => $summaryArray
         ]);
     }
+
+    public function getSummPodesProvinsi(){
+        $summary = $this->podesService->getAllPodesProvinsi();
+        return response()->json($summary);
+    }
     public function getProvinsi()
     {
         $provinsi = Provinsi::all();
