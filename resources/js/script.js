@@ -645,6 +645,26 @@ $(document).ready(function () {
                 });
             }
             const ctx = document.getElementById("dummyChart").getContext("2d");
+
+            const colors = [
+                "#2563eb", // biru utama
+                "#60a5fa", // biru muda
+                "#38bdf8", // biru cyan
+                "#a5b4fc", // biru keunguan muda
+                "#64748b", // abu-abu biru
+                "#cbd5e1", // abu-abu muda
+                "#3b82f6", // biru sedang
+                "#1e293b", // biru gelap
+                "#0ea5e9", // cyan terang
+                "#6366f1", // indigo
+                "#818cf8", // indigo muda
+                "#e0e7ef", // abu-abu sangat muda
+                "#93c5fd", // biru pastel
+                "#bae6fd", // cyan pastel
+                "#334155", // putih kebiruan
+            ];
+            const barColors = labels.map((_, i) => colors[i % colors.length]);
+
             new Chart(ctx, {
                 type: "bar",
                 data: {
@@ -653,13 +673,13 @@ $(document).ready(function () {
                         {
                             label: "Total Potensi per Provinsi",
                             data: data,
-                            backgroundColor: "#42aafa",
+                            backgroundColor: barColors,
                         },
                     ],
                 },
                 options: {
                     animation: {
-                        duration: 1200, // ms
+                        duration: 1200,
                         easing: "easeOut",
                     },
                     responsive: true,
