@@ -108,7 +108,7 @@
                         <h2 class="text-lg md:text-2xl font-bold text-gray-800">Statistik potensi berdasarkan Provinsi
                         </h2>
                     </div>
-                    <canvas id="dummyChart" height="120"></canvas>
+                    <canvas id="dummyChart" class="h-fit"></canvas>
                 </div>
 
                 <div class="mt-6 hidden overflow-x-auto rounded-xl" id="filteredTableContainer">

@@ -659,9 +659,9 @@ $(document).ready(function () {
                 "#6366f1", // indigo
                 "#818cf8", // indigo muda
                 "#e0e7ef", // abu-abu sangat muda
-                "#93c5fd", // biru pastel
+                "#93c5fd",
                 "#bae6fd", // cyan pastel
-                "#334155", // putih kebiruan
+                "#334155",
             ];
             const barColors = labels.map((_, i) => colors[i % colors.length]);
 
@@ -678,6 +678,7 @@ $(document).ready(function () {
                     ],
                 },
                 options: {
+                    indexAxis: "x",
                     animation: {
                         duration: 1200,
                         easing: "easeOut",
@@ -693,4 +694,27 @@ $(document).ready(function () {
             });
         });
     }
+
+    // Contoh untuk setiap filter
+    $("#provinsiSelect, #kabupatenSelect, #kecamatanSelect, #desaSelect").on(
+        "change",
+        function () {
+            const filters = {
+                provinsi: $("#provinsiSelect").val(),
+                kabupaten: $("#kabupatenSelect").val(),
+                kecamatan: $("#kecamatanSelect").val(),
+                desa: $("#desaSelect").val(),
+            };
+            localStorage.setItem("podesFilters", JSON.stringify(filters));
+            // Simpan juga data tabel dan filteredTableContainer jika sudah ada
+            localStorage.setItem(
+                "podesTableHTML",
+                $("#podesTable tbody").html()
+            );
+            localStorage.setItem(
+                "filteredTableHTML",
+                $("#filteredTableContainer").html()
+            );
+        }
+    );
 });
