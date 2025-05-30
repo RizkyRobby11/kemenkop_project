@@ -6,6 +6,7 @@ use Illuminate\Support\Facades\Route;
 
 
 
+
 Route::get("/", function () {
     $labels = KodePodes::all();
     return view("dashboard.index", compact("labels"));
@@ -23,3 +24,4 @@ Route::get("/kecamatan/{kode_kecamatan}/desakelurahan", [FilterController::class
 Route::get("/filter", [FilterController::class, "getPodesByFilter"]);
 Route::get('/podes/{kodewilayah}' ,[FilterController::class, "getAllPodes"]);
 Route::get('/podes/summary/provinsi',[FilterController::class, "getSummPodesProvinsi"]);
+Route::get('/podes/{kodewilayah}/{kodepodes}', [FilterController::class, "getDetailPodesByKodeWilayah"]);

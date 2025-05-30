@@ -20,7 +20,7 @@ class FilterController extends Controller
         $this->podesService = $podesService;
     }
 
- 		public function getAllPodes(Request $request)
+    public function getAllPodes(Request $request)
     {
         // Query
         $query = $this->podesService->getPodesQuery($request->kodewilayah);
@@ -29,25 +29,26 @@ class FilterController extends Controller
         $podes = $this->podesService->getPodesDetail($query);
 
         // Summary
-       $summary = $this->podesService->getPodesSummary($request->kodewilayah);
+        $summary = $this->podesService->getPodesSummary($request->kodewilayah);
         $summaryArray = [];
-
 
         if ($summary) {
             foreach ($summary->toArray() as $key => $value) {
                 $summaryArray[] = [
                     'nama' => $key,
-                    'nilai' => $value
-        ];
-    }
-}
+                    'nilai' => $value,
+                ];
+            }
+        }
         return response()->json([
             'detail' => $podes,
-            'summary' => $summaryArray
+            'summary' => $summaryArray,
         ]);
     }
 
-    public function getSummPodesProvinsi(){
+
+    public function getSummPodesProvinsi()
+    {
         $summary = $this->podesService->getAllPodesProvinsi();
         return response()->json($summary);
     }
@@ -77,7 +78,7 @@ class FilterController extends Controller
     public function getKabupatenByProvinsi($kode_provinsi)
     {
         if ($kode_provinsi) {
-            $kabupaten = KabupatenKota::where("kode_provinsi", $kode_provinsi)->get();
+            $kabupaten = KabupatenKota::where('kode_provinsi', $kode_provinsi)->get();
             return response()->json($kabupaten);
         }
     }
@@ -85,78 +86,81 @@ class FilterController extends Controller
     public function getKecamatanByKabupaten($kode_kabupaten_kota)
     {
         if ($kode_kabupaten_kota) {
-            $kecamatan = Kecamatan::where("kode_kabupaten_kota", $kode_kabupaten_kota)->get();
+            $kecamatan = Kecamatan::where('kode_kabupaten_kota', $kode_kabupaten_kota)->get();
             return response()->json($kecamatan);
         }
     }
     public function getDesaKelurahanByKecamatan($kode_kecamatan)
     {
         if ($kode_kecamatan) {
-            $desaKelurahan = DesaKelurahan::where("kode_kecamatan", $kode_kecamatan)->get();
+            $desaKelurahan = DesaKelurahan::where('kode_kecamatan', $kode_kecamatan)->get();
             return response()->json($desaKelurahan);
         }
     }
 
+    public function getPodesByFilter(Request $request)
+    {
+        $kodepodes = KodePodes::all();
+        // $search  = $request->search ;
+        $podes = Podes::query()
 
-public function getPodesByFilter(Request $request)
-{
-    $kodepodes = KodePodes::all();
-    // $search  = $request->search ;
-    $podes = Podes::query()
+            ->when($request->desa_kelurahan, function ($query) use ($request) {
+                $query->whereHas('desaKelurahan', function ($q) use ($request) {
+                    $q->where('kode_desa_kelurahan', $request->desa_kelurahan);
+                });
+            })
+            ->when($request->kecamatan, function ($query) use ($request) {
+                $query->whereHas('desaKelurahan.kecamatan', function ($q) use ($request) {
+                    $q->where('kode_kecamatan', $request->kecamatan);
+                });
+            })
+            ->when($request->kabupaten_kota, function ($query) use ($request) {
+                $query->whereHas('desaKelurahan.kecamatan.kabupatenKota', function ($q) use ($request) {
+                    $q->where('kode_kabupaten_kota', $request->kabupaten_kota);
+                });
+            })
+            ->when($request->provinsi, function ($query) use ($request) {
+                $query->whereHas('desaKelurahan.kecamatan.kabupatenKota.provinsi', function ($q) use ($request) {
+                    $q->where('kode_provinsi', $request->provinsi);
+                });
+            })
+            ->paginate($request->per_page ?? 10);
 
-        ->when($request->desa_kelurahan, function ($query) use ($request) {
-            $query->whereHas('desaKelurahan', function ($q) use ($request) {
-                $q->where('kode_desa_kelurahan', $request->desa_kelurahan);
-            });
-        })
-        ->when($request->kecamatan, function ($query) use ($request) {
-            $query->whereHas('desaKelurahan.kecamatan', function ($q) use ($request) {
-                $q->where('kode_kecamatan', $request->kecamatan);
-            });
-        })
-        ->when($request->kabupaten_kota, function ($query) use ($request) {
-            $query->whereHas('desaKelurahan.kecamatan.kabupatenKota', function ($q) use ($request) {
-                $q->where('kode_kabupaten_kota', $request->kabupaten_kota);
-            });
-        })
-        ->when($request->provinsi, function ($query) use ($request) {
-            $query->whereHas('desaKelurahan.kecamatan.kabupatenKota.provinsi', function ($q) use ($request) {
-                $q->where('kode_provinsi', $request->provinsi);
-            });
-        })
-        ->paginate($request->per_page ?? 10);
+        // Transform pagination results
+        $podes->getCollection()->transform(function ($item) use ($kodepodes) {
+            $podesArray = $item->toArray();
+            $transformedData = [
+                'Provinsi' => $item->desaKelurahan->kecamatan->kabupatenKota->provinsi->nama_provinsi ?? null,
+                'Kabupaten' => $item->desaKelurahan->kecamatan->kabupatenKota->nama_kabupaten_kota ?? null,
+                'Kecamatan' => $item->desaKelurahan->kecamatan->nama_kecamatan ?? null,
+                'Desa' => $item->desaKelurahan->nama_desa_kelurahan ?? null,
+                'Kode Desa' => $item->kode_desa_kelurahan,
+                'podes' => [], // Tambahkan object podes
+            ];
 
-    // Transform pagination results
-    $podes->getCollection()->transform(function ($item) use ($kodepodes) {
-        $podesArray = $item->toArray();
-        $transformedData = [
-            'Provinsi' => $item->desaKelurahan->kecamatan->kabupatenKota->provinsi->nama_provinsi ?? null,
-            'Kabupaten' => $item->desaKelurahan->kecamatan->kabupatenKota->nama_kabupaten_kota ?? null,
-            'Kecamatan' => $item->desaKelurahan->kecamatan->nama_kecamatan ?? null,
-            'Desa' => $item->desaKelurahan->nama_desa_kelurahan ?? null,
-            'Kode Desa' => $item->kode_desa_kelurahan,
-            'podes' => [] // Tambahkan object podes
-        ];
-
-        // Add PODES data with descriptions into podes object
-        foreach ($kodepodes as $kode) {
-            $columnName = $kode->{'COL 1'};
-            if (isset($podesArray[$columnName])) {
-                $transformedData['podes'][] = [
-                    'nama' => $kode->{'COL 2'},
-                    'nilai' => $podesArray[$columnName]
-                ];
+            // Add PODES data with descriptions into podes object
+            foreach ($kodepodes as $kode) {
+                $columnName = $kode->{'COL 1'};
+                if (isset($podesArray[$columnName])) {
+                    $transformedData['podes'][] = [
+                        'nama' => $kode->{'COL 2'},
+                        'nilai' => $podesArray[$columnName],
+                    ];
+                }
             }
-        }
 
-        return $transformedData;
-    });
+            return $transformedData;
+        });
 
-    return response()->json($podes);
+        return response()->json($podes);
+    }
+public function getDetailPodesByKodeWilayah(Request $request)
+    {
+        // Detail
+        $data = $this->podesService->getPodesDetailByKodePodes($request->kodewilayah, $request->kodepodes);
+
+        return response()->json([
+            'data' => $data,
+        ]);
+    }
 }
-
-
-
-}
-
-
