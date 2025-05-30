@@ -142,4 +142,71 @@ class PodesService
         return $result->values()->toArray();
     });
 }
+
+     public function getPodesDetailByKodePodes($kodewilayah, $kodepodes)
+    {
+        // Tentukan level berdasarkan panjang kode
+        $length = strlen($kodewilayah);
+        if ($length == 2) {
+            // Provinsi - Group by Kabupaten
+            $selectRaw = [
+                'kabupaten_kota.kode_kabupaten_kota',
+                'kabupaten_kota.nama_kabupaten_kota',
+                'provinsi.nama_provinsi'
+            ];
+            $summaryQuery = Podes::query()
+                ->join('desa_kelurahan', 'podes.kode_desa_kelurahan', '=', 'desa_kelurahan.kode_desa_kelurahan')
+                ->join('kecamatan', 'desa_kelurahan.kode_kecamatan', '=', 'kecamatan.kode_kecamatan')
+                ->join('kabupaten_kota', 'kecamatan.kode_kabupaten_kota', '=', 'kabupaten_kota.kode_kabupaten_kota')
+                ->join('provinsi', 'kabupaten_kota.kode_provinsi', '=', 'provinsi.kode_provinsi')
+                ->where('provinsi.kode_provinsi', $kodewilayah);
+            $groupBy = ['kabupaten_kota.kode_kabupaten_kota', 'kabupaten_kota.nama_kabupaten_kota', 'provinsi.nama_provinsi'];
+        } elseif ($length == 5) {
+            // Kabupaten/Kota - Group by Kecamatan
+            $selectRaw = [
+                'kecamatan.kode_kecamatan',
+                'kecamatan.nama_kecamatan',
+                'kabupaten_kota.nama_kabupaten_kota'
+            ];
+            $summaryQuery = Podes::query()
+                ->join('desa_kelurahan', 'podes.kode_desa_kelurahan', '=', 'desa_kelurahan.kode_desa_kelurahan')
+                ->join('kecamatan', 'desa_kelurahan.kode_kecamatan', '=', 'kecamatan.kode_kecamatan')
+                ->join('kabupaten_kota', 'kecamatan.kode_kabupaten_kota', '=', 'kabupaten_kota.kode_kabupaten_kota')
+                ->where('kabupaten_kota.kode_kabupaten_kota', $kodewilayah);
+            $groupBy = ['kecamatan.kode_kecamatan', 'kecamatan.nama_kecamatan', 'kabupaten_kota.nama_kabupaten_kota'];
+        } elseif ($length == 9) {
+            // Kecamatan - Group by Desa/Kelurahan
+            $selectRaw = [
+                'desa_kelurahan.kode_desa_kelurahan',
+                'desa_kelurahan.nama_desa_kelurahan',
+                'kecamatan.nama_kecamatan'
+            ];
+            $summaryQuery = Podes::query()
+                ->join('desa_kelurahan', 'podes.kode_desa_kelurahan', '=', 'desa_kelurahan.kode_desa_kelurahan')
+                ->join('kecamatan', 'desa_kelurahan.kode_kecamatan', '=', 'kecamatan.kode_kecamatan')
+                ->where('kecamatan.kode_kecamatan', $kodewilayah);
+            $groupBy = ['desa_kelurahan.kode_desa_kelurahan', 'desa_kelurahan.nama_desa_kelurahan', 'kecamatan.nama_kecamatan'];
+        } elseif ($length == 13) {
+            // Kelurahan - Detail level
+            $selectRaw = [
+                'desa_kelurahan.kode_desa_kelurahan',
+                'desa_kelurahan.nama_desa_kelurahan'
+            ];
+            $summaryQuery = Podes::query()
+                ->join('desa_kelurahan', 'podes.kode_desa_kelurahan', '=', 'desa_kelurahan.kode_desa_kelurahan')
+                ->where('desa_kelurahan.kode_desa_kelurahan', $kodewilayah);
+            $groupBy = ['desa_kelurahan.kode_desa_kelurahan', 'desa_kelurahan.nama_desa_kelurahan'];
+        } else {
+            return null;
+        }
+
+        // Get specific column name based on kodepodes
+        $kodepodesItem = $this->kodepodes->where('COL 1', $kodepodes)->first();
+        if ($kodepodesItem) {
+            $columnName = $kodepodesItem->{'COL 1'};
+            $selectRaw[] = DB::raw("SUM(podes.{$columnName}) as '{$kodepodesItem->{'COL 2'} }'");
+        }
+
+        return $summaryQuery->select($selectRaw)->groupBy(...$groupBy)->get();
+    }
 }
