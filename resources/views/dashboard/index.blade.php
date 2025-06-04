@@ -15,40 +15,49 @@
 </head>
 
 <body class="font-[Inter]">
+    {{-- NAVBAR START --}}
+    <div class="navbar bg-base-100 shadow-sm">
+        <a href="/"><img src="{{ asset('images/logo/logo-kemenkop.png') }}" alt="" class="w-40"></a>
+    </div>
+    {{-- NAVBAR END --}}
     <div class="flex flex-1 flex-col md:flex-row lg:flex-row">
         <div class="overflow-hidden shadow w-full">
-            <div class="bg-gradient-to-b from-[#42aafa] to-[#2a8bd3] w-full py-16 px-5 min-h-screen h-auto">
+            <div class="bg-base-100 w-full py-16 px-5 min-h-screen h-auto">
                 <div class="container mx-auto px-4">
                     <div class="mb-5 text-center">
-                        <h2 class="text-4xl font-bold text-white uppercase">Hasil Pengolahan Podes 2024</h2>
+                        <h2 class="text-4xl font-bold text-[#005069] uppercase">Hasil Pengolahan Podes 2024</h2>
                     </div>
                 </div>
                 <div class="w-full lg:flex lg:justify-between">
                     <div class="flex flex-wrap w-full lg:w-auto justify-center lg:justify-start gap-2">
                         <!-- Provinsi -->
-                        <div class="dropdown dropdown-bottom">
-                            <select id="provinsiSelect" aria-label="Select province" class="btn m-1">
-                                <option selected>Pilih Provinsi</option>
+                        <div class="dropdown dropdown-bottom ">
+                            <select id="provinsiSelect" aria-label="Select province"
+                                class="btn m-1 bg-[#98ac19] text-white">
+                                <option class="" selected>Pilih Provinsi</option>
                             </select>
                         </div>
 
                         <!-- Kabupaten -->
                         <div class="dropdown dropdown-bottom">
-                            <select id="kabupatenSelect" aria-label="Select kabupaten" class="btn m-1" disabled>
+                            <select id="kabupatenSelect" aria-label="Select kabupaten"
+                                class="btn m-1 bg-[#98ac19] text-white" disabled>
                                 <option selected>Pilih Kabupaten</option>
                             </select>
                         </div>
 
                         <!-- Kecamatan -->
                         <div class="dropdown dropdown-bottom">
-                            <select id="kecamatanSelect" aria-label="Select kecamatan" class="btn m-1" disabled>
+                            <select id="kecamatanSelect" aria-label="Select kecamatan"
+                                class="btn m-1 bg-[#98ac19] text-white" disabled>
                                 <option selected>Pilih Kecamatan</option>
                             </select>
                         </div>
 
                         <!-- Desa -->
                         <div class="dropdown dropdown-bottom">
-                            <select id="desaSelect" aria-label="Select desa" class="btn m-1" disabled>
+                            <select id="desaSelect" aria-label="Select desa" class="btn m-1 bg-[#98ac19] text-white"
+                                disabled>
                                 <option selected>Pilih Desa/Kelurahan</option>
                             </select>
                         </div>
@@ -74,7 +83,7 @@
                 <div class="mt-2 bg-white overflow-x-auto rounded-xl shadow-lg">
                     <table class="table min-w-max text-sm text-left text-gray-700 bg-white border border-gray-200"
                         id="podesTable">
-                        <thead class="bg-gray-100 text-gray-800 uppercase text-xs">
+                        <thead class="bg-[#005069] text-white uppercase text-xs">
                             <tr>
                                 <th class="px-4 py-3">Nama Provinsi</th>
                                 <th class="px-4 py-3">Nama Kabupaten</th>
@@ -113,6 +122,24 @@
 
                 <div class="mt-6 hidden overflow-x-auto rounded-xl" id="filteredTableContainer">
                     <div id="filteredCardWrapper"></div>
+                </div>
+
+                <div class="mt-6 hidden overflow-x-auto rounded-xl" id="detailPodesContainer">
+                    <table class="table min-w-max text-sm text-left text-gray-700 bg-white border border-gray-200"
+                        id="detailPodesTable">
+                        <thead class="bg-[#005069] text-white uppercase text-xs">
+                            <tr>
+                                <th class="px-4 py-3">Kode Podes</th>
+                                <th class="px-4 py-3">Nama Podes</th>
+                                <th class="px-4 py-3">Nilai</th>
+                                <th class="px-4 py-3">Satuan</th>
+                                <th class="px-4 py-3">Keterangan</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <!-- Akan diisi via JS -->
+                        </tbody>
+                    </table>
                 </div>
 
                 <div id="notFoundMessage"
