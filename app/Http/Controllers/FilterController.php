@@ -31,15 +31,6 @@ class FilterController extends Controller
         // Summary
         $summary = $this->podesService->getPodesSummary($request->kodewilayah);
         $summaryArray = [];
-
-        if ($summary) {
-            foreach ($summary->toArray() as $key => $value) {
-                $summaryArray[] = [
-                    'nama' => $key,
-                    'nilai' => $value,
-                ];
-            }
-        }
         return response()->json([
             'detail' => $podes,
             'summary' => $summaryArray,
