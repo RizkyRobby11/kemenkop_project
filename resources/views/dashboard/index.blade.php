@@ -15,66 +15,67 @@
 </head>
 
 <body class="font-[Inter]">
+
+    {{-- NAVBAR START --}}
+    <div class="navbar ">
+        <a href="/" class=" text-xl">
+            <img src="{{ asset('images/logo/logo-kemenkop.png') }}" alt="logo kementerian koperasi" class="w-48">
+        </a>
+    </div>
+    {{-- NAVBAR END --}}
+
     <div class="flex flex-1 flex-col md:flex-row lg:flex-row">
         <div class="overflow-hidden shadow w-full">
-            <div class="bg-gradient-to-b from-[#42aafa] to-[#2a8bd3] w-full py-16 px-5 min-h-screen h-auto">
+            <div class="bg-white w-full py-16 px-5 min-h-screen h-auto">
                 <div class="container mx-auto px-4">
                     <div class="mb-5 text-center">
-                        <h2 class="text-4xl font-bold text-white uppercase">Hasil Pengolahan Podes 2024</h2>
+                        <h2 class="text-4xl font-bold text-[#0E5367] uppercase">Hasil Pengolahan Podes 2024</h2>
                     </div>
                 </div>
                 <div class="w-full lg:flex lg:justify-between">
                     <div class="flex flex-wrap w-full lg:w-auto justify-center lg:justify-start gap-2">
                         <!-- Provinsi -->
                         <div class="dropdown dropdown-bottom">
-                            <select id="provinsiSelect" aria-label="Select province" class="btn m-1">
+                            <select id="provinsiSelect" aria-label="Select province"
+                                class="btn m-1 px-4 py-2 rounded-lg font-semibold bg-[#A1BB3A] text-[#f8f8ff] border-2 focus:border-[#E5A821] focus:ring-2 focus:ring-[#A1BB3A] transition disabled:bg-gray-100 disabled:text-gray-400 disabled:border-gray-200">
                                 <option selected>Pilih Provinsi</option>
                             </select>
                         </div>
 
                         <!-- Kabupaten -->
                         <div class="dropdown dropdown-bottom">
-                            <select id="kabupatenSelect" aria-label="Select kabupaten" class="btn m-1" disabled>
+                            <select id="kabupatenSelect" aria-label="Select kabupaten"
+                                class="btn m-1 px-4 py-2 rounded-lg font-semibold bg-[#A1BB3A] text-[#f8f8ff] border-2 focus:border-[#E5A821] focus:ring-2 focus:ring-[#A1BB3A] transition disabled:bg-gray-100 disabled:text-gray-400 disabled:border-gray-200"
+                                disabled>
                                 <option selected>Pilih Kabupaten</option>
                             </select>
                         </div>
 
                         <!-- Kecamatan -->
                         <div class="dropdown dropdown-bottom">
-                            <select id="kecamatanSelect" aria-label="Select kecamatan" class="btn m-1" disabled>
+                            <select id="kecamatanSelect" aria-label="Select kecamatan"
+                                class="btn m-1 px-4 py-2 rounded-lg font-semibold bg-[#A1BB3A] text-[#f8f8ff] border-2 focus:border-[#E5A821] focus:ring-2 focus:ring-[#A1BB3A] transition disabled:bg-gray-100 disabled:text-gray-400 disabled:border-gray-200"
+                                disabled>
                                 <option selected>Pilih Kecamatan</option>
                             </select>
                         </div>
 
                         <!-- Desa -->
                         <div class="dropdown dropdown-bottom">
-                            <select id="desaSelect" aria-label="Select desa" class="btn m-1" disabled>
+                            <select id="desaSelect" aria-label="Select desa"
+                                class="btn m-1 px-4 py-2 rounded-lg font-semibold bg-[#A1BB3A] text-[#f8f8ff] border-2 focus:border-[#E5A821] focus:ring-2 focus:ring-[#A1BB3A] transition disabled:bg-gray-100 disabled:text-gray-400 disabled:border-gray-200"
+                                disabled>
                                 <option selected>Pilih Desa/Kelurahan</option>
                             </select>
                         </div>
                     </div>
 
-                    <!-- Form Search -->
-                    {{-- <form action="/search" method="POST" class="flex justify-center lg:ml-4 mt-4 lg:mt-0 gap-2">
-                        <input type="text" name="search" id="search" class="input input-bordered w-64"
-                            placeholder="Cari sesuat
-                        <button type="submit" class="btn">
-                            <svg class="h-[1em] opacity-50" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
-                                <g stroke-linejoin="round" stroke-linecap="round" stroke-width="2.5" fill="none"
-                                    stroke="currentColor">
-                                    <circle cx="11" cy="11" r="8"></circle>
-                                    <path d="m21 21-4.3-4.3"></path>
-                                </g>
-                            </svg>
-                        </button>
-                        @csrf
-                    </form> --}}
                 </div>
 
                 <div class="mt-2 bg-white overflow-x-auto rounded-xl shadow-lg">
-                    <table class="table min-w-max text-sm text-left text-gray-700 bg-white border border-gray-200"
+                    <table class="table min-w-max text-sm text-left text-[#22223B] bg-white border border-[#0E5367] "
                         id="podesTable">
-                        <thead class="bg-gray-100 text-gray-800 uppercase text-xs">
+                        <thead class="bg-[#0E5367] text-white uppercase text-xs">
                             <tr>
                                 <th class="px-4 py-3">Nama Provinsi</th>
                                 <th class="px-4 py-3">Nama Kabupaten</th>
@@ -83,7 +84,7 @@
                                 <th class="px-4 py-3">Kode Desa/Kelurahan</th>
                             </tr>
                         </thead>
-                        <tbody class="divide-y divide-gray-200">
+                        <tbody class="divide-y divide-[#A1BB3A]">
                         </tbody>
                     </table>
                 </div>

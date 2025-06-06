@@ -128,7 +128,7 @@ $(document).ready(function () {
                 $wrapper.html(`
                     <div class="card w-full max-w-md bg-white shadow-lg mx-auto my-8 rounded-xl border border-gray-100">
                         <div class="card-body p-6">
-                            <span class=" mb-2 text-2xl">Potensi dari Desa/Kelurahan :</span>
+                            <span class=" mb-2 text-2xl uppercase">Potensi dari Desa/Kelurahan :</span>
                             <h2 class="text-2xl font-bold text-gray-800 mb-1">${namaDesa}</h2>
                             <hr>
                             <ul class="mt-4 flex flex-col gap-3 text-sm">
@@ -284,7 +284,7 @@ $(document).ready(function () {
                     if (startPage > 1) {
                         paginationHtml += `<button class="join-item btn" onclick="window.getPodesByWilayah(1)">1</button>`;
                         if (startPage > 2) {
-                            paginationHtml += `<button class="join-item text-white btn btn-disabled">...</button>`;
+                            paginationHtml += `<button class="join-item  btn ">...</button>`;
                         }
                     }
 
@@ -296,7 +296,7 @@ $(document).ready(function () {
 
                     if (endPage < totalPages) {
                         if (endPage < totalPages - 1) {
-                            paginationHtml += `<button class="join-item btn btn-disabled text-white">...</button>`;
+                            paginationHtml += `<button class="join-item btn ">...</button>`;
                         }
                         paginationHtml += `<button class="join-item btn" onclick="window.getPodesByWilayah(${kodeWilayah}, ${isDesa}, ${totalPages})">${totalPages}</button>`;
                     }
@@ -368,8 +368,8 @@ $(document).ready(function () {
                     for (const kategori in potensiByKategori) {
                         cards.push(`
             <div class="card w-full max-w-md bg-white shadow-lg mx-auto my-8 rounded-xl border border-gray-100">
-                <div class="card-body p-6">
-                    <span class="text-xl font-bold text-[#2a8bd3] block mb-2">${kategori}</span>
+                <div class="card-body shadow p-6">
+                    <span class="text-xl font-bold text-[#0E5367] block mb-2">${kategori}</span>
                     
                     <hr>
                     <ul class="mt-4 flex flex-col gap-3 text-sm">
@@ -384,8 +384,8 @@ $(document).ready(function () {
                 if (summaryArr.length > 0) {
                     // Tampilkan nama wilayah di atas grid card
                     $("#filteredTableContainer").removeClass("hidden").html(`
-        <div class=" w-full p-2 text-2xl flex justify-center font-bold text-center text-[#42aafa]">
-            <div class="w-fit p-2 bg-white rounded-lg h-full">
+        <div class=" w-full p-2 text-2xl flex justify-center font-bold text-center text-[#0E5367]">
+            <div class="w-fit p-2 border-b  uppercase shadow-[0_4px_8px_-4px_rgba(14,83,103,0.25)] h-full">
                 <h2>Potensial dari wilayah : ${namaWilayah}</h2>
             </div>
         </div>
@@ -503,8 +503,11 @@ $(document).ready(function () {
                     $("#notFoundMessage").removeClass("hidden");
                 } else {
                     $("#notFoundMessage").addClass("hidden");
-                    response.data.forEach((item) => {
-                        let row = "<tr>";
+                    response.data.forEach((item, idx) => {
+                        // Tambahkan class ganjil/genap
+                        const rowClass =
+                            idx % 2 === 0 ? "bg-white" : "bg-[#F9F7F1]";
+                        let row = `<tr class="${rowClass}">`;
                         let i = 0;
                         for (let key in item) {
                             if (i >= 5) break;
@@ -520,7 +523,7 @@ $(document).ready(function () {
                 // Pagination
                 let paginationHtml = "";
                 if (response.data.length > 0) {
-                    paginationHtml += `<button class="join-item btn" ${
+                    paginationHtml += `<button class="join-item btn " ${
                         response.prev_page_url
                             ? `onclick="window.loadPodesData(${
                                   response.current_page - 1
@@ -536,7 +539,7 @@ $(document).ready(function () {
                     if (startPage > 1) {
                         paginationHtml += `<button class="join-item btn" onclick="window.loadPodesData(1)">1</button>`;
                         if (startPage > 2) {
-                            paginationHtml += `<button class="join-item text-white btn btn-disabled">...</button>`;
+                            paginationHtml += `<button class="join-item  btn ">...</button>`;
                         }
                     }
 
@@ -548,7 +551,7 @@ $(document).ready(function () {
 
                     if (endPage < totalPages) {
                         if (endPage < totalPages - 1) {
-                            paginationHtml += `<button class="join-item btn btn-disabled text-white">...</button>`;
+                            paginationHtml += `<button class="join-item btn  ">...</button>`;
                         }
                         paginationHtml += `<button class="join-item btn" onclick="window.loadPodesData(${totalPages})">${totalPages}</button>`;
                     }
@@ -601,9 +604,9 @@ $(document).ready(function () {
                     $("#filteredTableContainer").removeClass("hidden").html(`
             <div class="card w-full max-w-md bg-white shadow-lg mx-auto my-8 rounded-xl border border-gray-100">
                 <div class="card-body p-6">
-                    <span class="mb-2 text-2xl text-center font-bold">Potensi dari Desa/Kelurahan :</span>
+                    <span class="mb-2 text-2xl text-center uppercase font-bold">Potensi dari Desa/Kelurahan :</span>
                     <div class="w-full flex justify-center rounded-full h-full">
-                                <h2 class="text-2xl bg-[#42aafa] p-3 rounded-lg w-fit block text-white font-bold text-center">${namaDesa}</h2>
+                                <h2 class="text-2xl  w-fit block text-[#0E5367] font-bold text-center">${namaDesa}</h2>
                             </div>
                     <hr>
                     <ul class="mt-4 flex flex-col gap-3 text-sm">
@@ -644,6 +647,23 @@ $(document).ready(function () {
                     data.push(Number(item.total_semua_podes) || 0);
                 });
             }
+            const colors = [
+                "#2563eb", // biru utama
+                "#60a5fa", // biru muda
+                "#38bdf8", // biru cyan
+                "#a5b4fc", // biru keunguan muda
+                "#64748b", // abu-abu biru
+                "#cbd5e1", // abu-abu muda
+                "#3b82f6", // biru sedang
+                "#1e293b", // biru gelap
+                "#0ea5e9", // cyan terang
+                "#6366f1", // indigo
+                "#818cf8", // indigo muda
+                "#e0e7ef", // abu-abu sangat muda
+                "#93c5fd",
+                "#bae6fd", // cyan pastel
+                "#334155",
+            ];
             const ctx = document.getElementById("dummyChart").getContext("2d");
             new Chart(ctx, {
                 type: "bar",
@@ -653,7 +673,7 @@ $(document).ready(function () {
                         {
                             label: "Total Potensi per Provinsi",
                             data: data,
-                            backgroundColor: "#42aafa",
+                            backgroundColor: colors.slice(0, data.length),
                         },
                     ],
                 },
