@@ -644,6 +644,23 @@ $(document).ready(function () {
                     data.push(Number(item.total_semua_podes) || 0);
                 });
             }
+            const colors = [
+                "#2563eb", // biru utama
+                "#60a5fa", // biru muda
+                "#38bdf8", // biru cyan
+                "#a5b4fc", // biru keunguan muda
+                "#64748b", // abu-abu biru
+                "#cbd5e1", // abu-abu muda
+                "#3b82f6", // biru sedang
+                "#1e293b", // biru gelap
+                "#0ea5e9", // cyan terang
+                "#6366f1", // indigo
+                "#818cf8", // indigo muda
+                "#e0e7ef", // abu-abu sangat muda
+                "#93c5fd",
+                "#bae6fd", // cyan pastel
+                "#334155",
+            ];
             const ctx = document.getElementById("dummyChart").getContext("2d");
             new Chart(ctx, {
                 type: "bar",
@@ -653,7 +670,7 @@ $(document).ready(function () {
                         {
                             label: "Total Potensi per Provinsi",
                             data: data,
-                            backgroundColor: "#42aafa",
+                            backgroundColor: colors.slice(0, data.length),
                         },
                     ],
                 },
