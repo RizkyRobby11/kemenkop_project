@@ -317,15 +317,6 @@ $(document).ready(function () {
                     ? response.summary
                     : [];
 
-                let kodePotensial = response.detail.data;
-                kodePotensial.forEach((item) => {
-                    let kode = item["PODES"];
-                    kode.forEach((potensial) => {
-                        let detailKodePotensial = potensial.kode_podes;
-                        console.log(detailKodePotensial);
-                    });
-                });
-
                 // console.log(kodePotensial);
                 // Jika desa, ambil nama desa dari summary atau dari dropdown
                 if (isDesa) {
@@ -341,8 +332,10 @@ $(document).ready(function () {
                         if (!potensiByKategori[kategori])
                             potensiByKategori[kategori] = [];
                         potensiByKategori[kategori].push(`
-                                <li class="flex items-center">
-                            <span>👉 ${potensial.nama || "-"}
+                                <li  class="flex items-center">
+                            <span id="listPotensial" data-id="${
+                                potensial.kode_podes
+                            }">👉 ${potensial.nama || "-"}
                             <b class="ml-1">${potensial.nilai ?? ""}</b>
                             </span>
                             </li>
@@ -410,18 +403,31 @@ $(document).ready(function () {
         });
     };
 
-    function getDetailPotetial(id) {
-        let kodePotensial = "diisi variabel kode potensial";
+    function getDetailPotetial(kodeWilayah, kodePotensial) {
         $.ajax({
-            url: `http://127.0.0.1:8000/podes/${kodeWilayah}/${kodePotensial}`,
+            url: `/podes/${kodeWilayah}/${kodePotensial}`,
+            method: "GET",
+            success: function (response) {
+                console.log(response);
+            },
         });
     }
+
+    $(document).on("click", "#listPotensial", function () {
+        const kodePotensial = $(this).data("id");
+        // Get the active selected wilayah code based on dropdown hierarchy
+        const kodeWilayah = window.kodeWilayah;
+        if (kodePotensial && kodeWilayah) {
+            getDetailPotetial(kodeWilayah, kodePotensial);
+        }
+    });
 
     // =========================
     // Dropdown Event Handlers
     // =========================
     $("#provinsiSelect").change(function () {
         const kodeProvinsi = $(this).val();
+        window.kodeWilayah = kodeProvinsi;
         resetDropdown($("#kabupatenSelect"), "Pilih Kabupaten");
         resetDropdown($("#kecamatanSelect"), "Pilih Kecamatan");
         resetDropdown($("#desaSelect"), "Pilih Desa/Kelurahan");
@@ -442,6 +448,7 @@ $(document).ready(function () {
 
     $("#kabupatenSelect").change(function () {
         const kodeKabupaten = $(this).val();
+        window.kodeWilayah = kodeKabupaten;
         resetDropdown($("#kecamatanSelect"), "Pilih Kecamatan");
         resetDropdown($("#desaSelect"), "Pilih Desa/Kelurahan");
         $("#filteredTableContainer").addClass("hidden"); // Tambahkan baris ini
@@ -459,6 +466,7 @@ $(document).ready(function () {
 
     $("#kecamatanSelect").change(function () {
         const kodeKecamatan = $(this).val();
+        window.kodeWilayah = kodeKecamatan;
         resetDropdown($("#desaSelect"), "Pilih Desa/Kelurahan");
         $("#filteredTableContainer").addClass("hidden"); // Tambahkan baris ini
         if (kodeKecamatan === "Pilih Kecamatan") {
