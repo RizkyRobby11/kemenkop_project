@@ -241,13 +241,14 @@ $(document).ready(function () {
     window.getPodesByWilayah = function (
         kodeWilayah,
         isDesa = false,
-        page = 1
+        page = 1,
+        title = "Sedang Memuat Data..."
     ) {
         $.ajax({
             url: `/podes/${kodeWilayah}?page=${page}`,
             method: "GET",
             success: function (response) {
-                console.log(response);
+                // console.log(response);
                 let tableContent = "";
                 if (response.detail.data.length === 0) {
                     $("#notFoundMessage").removeClass("hidden");
@@ -312,46 +313,40 @@ $(document).ready(function () {
                 }
                 $("#pagination").html(paginationHtml);
 
-                let dataArr = Array.isArray(response.detail.data)
-                    ? response.detail.data
+                let summaryArr = Array.isArray(response.summary)
+                    ? response.summary
                     : [];
-                console.log(dataArr);
-                dataArr.forEach((item, idx) => {
-                    if (Array.isArray(item.PODES)) {
-                        item.PODES.forEach((podesObj, i) => {
-                            // podesObj adalah object, ambil key dan value-nya
-                            Object.entries(podesObj).forEach(([key, value]) => {
-                                // console.log(`Key: ${key}, Value: ${value}`);
-                                // Lakukan sesuatu dengan key dan value
-                            });
-                        });
-                    }
+
+                let kodePotensial = response.detail.data;
+                kodePotensial.forEach((item) => {
+                    let kode = item["PODES"];
+                    kode.forEach((potensial) => {
+                        let detailKodePotensial = potensial.kode_podes;
+                        console.log(detailKodePotensial);
+                    });
                 });
 
+                // console.log(kodePotensial);
                 // Jika desa, ambil nama desa dari summary atau dari dropdown
-                let title = "-";
                 if (isDesa) {
                     title = $("#desaSelect option:selected").text();
-                } else if (dataArr.length > 0) {
-                    title = dataArr[0]["NAMA PROVINSI"] || "-";
-                    console.log("title", title);
                 }
                 // Kategorikan summaryList
                 let potensiByKategori = {};
-                dataArr
-                    .slice(2)
-                    .filter((item) => Number(item.nilai) !== 0)
-                    .forEach((item) => {
-                        const kategori = getKategoriPotensi(item.nama);
+
+                summaryArr
+                    .filter((potensial) => Number(potensial.nilai) !== 0)
+                    .forEach((potensial, i) => {
+                        const kategori = getKategoriPotensi(potensial.nama);
                         if (!potensiByKategori[kategori])
                             potensiByKategori[kategori] = [];
                         potensiByKategori[kategori].push(`
-            <li class="flex items-center">
-                <span>👉 ${item.nama || "-"} <b class="ml-1">${
-                            item.nilai ?? ""
-                        }</b></span>
-            </li>
-        `);
+                                <li class="flex items-center">
+                            <span>👉 ${potensial.nama || "-"}
+                            <b class="ml-1">${potensial.nilai ?? ""}</b>
+                            </span>
+                            </li>
+                            `);
                     });
 
                 let cards = [];
@@ -395,7 +390,7 @@ $(document).ready(function () {
                     }
                 }
 
-                if (dataArr.length > 0) {
+                if (summaryArr.length > 0) {
                     // Tampilkan nama wilayah di atas grid card
                     $("#filteredTableContainer").removeClass("hidden").html(`
         <div class=" w-full p-2 text-2xl flex justify-center font-bold text-center text-[#0E5367]">
@@ -415,6 +410,13 @@ $(document).ready(function () {
         });
     };
 
+    function getDetailPotetial(id) {
+        let kodePotensial = "diisi variabel kode potensial";
+        $.ajax({
+            url: `http://127.0.0.1:8000/podes/${kodeWilayah}/${kodePotensial}`,
+        });
+    }
+
     // =========================
     // Dropdown Event Handlers
     // =========================
@@ -433,7 +435,8 @@ $(document).ready(function () {
         $("#kabupatenSelect").prop("disabled", false);
         loadKabupaten(kodeProvinsi);
         $("#chartContainer").addClass("hidden");
-        getPodesByWilayah(kodeProvinsi);
+        let title = $("#provinsiSelect option:selected").text();
+        getPodesByWilayah(kodeProvinsi, false, 1, title);
         // window.loadPodesData(1);
     });
 
@@ -450,7 +453,8 @@ $(document).ready(function () {
         $("#kecamatanSelect").prop("disabled", false);
         loadKecamatan(kodeKabupaten);
         $("#chartContainer").addClass("hidden");
-        getPodesByWilayah(kodeKabupaten);
+        let title = $("#kabupatenSelect option:selected").text();
+        getPodesByWilayah(kodeKabupaten, false, 1, title);
     });
 
     $("#kecamatanSelect").change(function () {
@@ -466,6 +470,8 @@ $(document).ready(function () {
         loadDesa(kodeKecamatan);
         $("#chartContainer").addClass("hidden");
         getPodesByWilayah(kodeKecamatan);
+        let title = $("#kecamatanSelect option:selected").text();
+        getPodesByWilayah(kodeKecamatan, false, 1, title);
     });
 
     $("#desaSelect").change(function () {
