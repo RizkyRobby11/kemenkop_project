@@ -247,6 +247,7 @@ $(document).ready(function () {
             url: `/podes/${kodeWilayah}?page=${page}`,
             method: "GET",
             success: function (response) {
+                console.log(response);
                 let tableContent = "";
                 if (response.detail.data.length === 0) {
                     $("#notFoundMessage").removeClass("hidden");
@@ -311,20 +312,33 @@ $(document).ready(function () {
                 }
                 $("#pagination").html(paginationHtml);
 
-                let summaryArr = Array.isArray(response.summary)
-                    ? response.summary
+                let dataArr = Array.isArray(response.detail.data)
+                    ? response.detail.data
                     : [];
+                console.log(dataArr);
+                dataArr.forEach((item, idx) => {
+                    if (Array.isArray(item.PODES)) {
+                        item.PODES.forEach((podesObj, i) => {
+                            // podesObj adalah object, ambil key dan value-nya
+                            Object.entries(podesObj).forEach(([key, value]) => {
+                                // console.log(`Key: ${key}, Value: ${value}`);
+                                // Lakukan sesuatu dengan key dan value
+                            });
+                        });
+                    }
+                });
 
                 // Jika desa, ambil nama desa dari summary atau dari dropdown
                 let title = "-";
                 if (isDesa) {
                     title = $("#desaSelect option:selected").text();
-                } else if (summaryArr.length > 0) {
-                    title = summaryArr[1].nilai;
+                } else if (dataArr.length > 0) {
+                    title = dataArr[0]["NAMA PROVINSI"] || "-";
+                    console.log("title", title);
                 }
                 // Kategorikan summaryList
                 let potensiByKategori = {};
-                summaryArr
+                dataArr
                     .slice(2)
                     .filter((item) => Number(item.nilai) !== 0)
                     .forEach((item) => {
@@ -381,7 +395,7 @@ $(document).ready(function () {
                     }
                 }
 
-                if (summaryArr.length > 0) {
+                if (dataArr.length > 0) {
                     // Tampilkan nama wilayah di atas grid card
                     $("#filteredTableContainer").removeClass("hidden").html(`
         <div class=" w-full p-2 text-2xl flex justify-center font-bold text-center text-[#0E5367]">
