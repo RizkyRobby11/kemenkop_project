@@ -410,7 +410,6 @@ $(document).ready(function () {
             url: `/podes/${kodeWilayah}/${kodePotensial}`,
             method: "GET",
             success: function (response) {
-                console.log(response);
                 let tableContentDetail = "";
                 let tableHeader = "";
 
