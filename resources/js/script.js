@@ -248,7 +248,6 @@ $(document).ready(function () {
             url: `/podes/${kodeWilayah}?page=${page}`,
             method: "GET",
             success: function (response) {
-                // console.log(response);
                 let tableContent = "";
                 if (response.detail.data.length === 0) {
                     $("#notFoundMessage").removeClass("hidden");
@@ -317,7 +316,6 @@ $(document).ready(function () {
                     ? response.summary
                     : [];
 
-                // console.log(kodePotensial);
                 // Jika desa, ambil nama desa dari summary atau dari dropdown
                 if (isDesa) {
                     title = $("#desaSelect option:selected").text();
@@ -441,7 +439,6 @@ $(document).ready(function () {
                 //         tableHeader += `<th>${keys[i]}</th>`;
                 //     }
                 //     tableHeader += "</tr>";
-                //     console.log(tableHeader);
                 // }
 
                 // // Render isi tabel
@@ -591,7 +588,6 @@ $(document).ready(function () {
                 $("#notFoundMessage").addClass("hidden");
             },
             success: function (response) {
-                // console.log(response);
                 let tableContent = "";
                 if (response.data.length === 0) {
                     $("#notFoundMessage").removeClass("hidden");
