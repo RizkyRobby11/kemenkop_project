@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en" class="light">
+<html lang="en" class="light scroll-smooth">
 
 <head>
     <meta charset="UTF-8">
@@ -27,11 +27,17 @@
     <div class="flex flex-1 flex-col md:flex-row lg:flex-row">
         <div class="overflow-hidden shadow w-full">
             <div class="bg-white w-full py-16 px-5 min-h-screen h-auto">
+
+                {{-- TITLE START --}}
                 <div class="container mx-auto px-4">
                     <div class="mb-5 text-center">
                         <h2 class="text-4xl font-bold text-[#0E5367] uppercase">Hasil Pengolahan Podes 2024</h2>
                     </div>
                 </div>
+                {{-- TITLE END --}}
+
+                {{-- FILTER START --}}
+
                 <div class="w-full lg:flex lg:justify-between">
                     <div class="flex flex-wrap w-full lg:w-auto justify-center lg:justify-start gap-2">
                         <!-- Provinsi -->
@@ -71,6 +77,10 @@
                     </div>
 
                 </div>
+                {{-- FILTER END --}}
+
+
+                {{-- TABLE WILAYAH START --}}
 
                 <div class="mt-2 bg-white overflow-x-auto rounded-xl shadow-lg">
                     <table class="table min-w-max text-sm text-left text-[#22223B] bg-white border border-[#0E5367] "
@@ -91,10 +101,11 @@
                 <div id="loadingIndicator" class="hidden flex justify-center my-6">
                     <span class="loading loading-spinner loading-lg text-white"></span>
                 </div>
+                {{-- TABLE WILAYAH END --}}
 
 
 
-                <!-- Pagination -->
+                {{-- PAGINATION START --}}
                 <nav aria-label="Page navigation" class="mt-4 flex justify-center">
                     <div id="pagination" class="join">
                         <!-- Akan diisi dengan JavaScript atau Blade -->
@@ -103,6 +114,9 @@
                         <button class="join-item btn">»</button>
                     </div>
                 </nav>
+                {{-- PAGINATION END --}}
+
+                {{-- CHART PROVINSI START --}}
 
                 <div class="my-6 bg-white rounded-md" id="chartContainer">
                     <div class="flex justify-center p-2">
@@ -111,12 +125,34 @@
                     </div>
                     <canvas id="dummyChart" height="120"></canvas>
                 </div>
+                {{-- CHART PROVINSI END --}}
+
+                {{-- POTENTIAL CARD BASE ON REGION OR DESA/KELURAHAN START --}}
 
                 <div class="mt-6 hidden overflow-x-auto rounded-xl" id="filteredTableContainer">
                     <div id="filteredCardWrapper"></div>
                 </div>
+                {{-- POTENTIAL CARD BASE ON REGION OR DESA/KELURAHAN END --}}
 
-                <div id="notFoundMessage"
+                {{-- DETAIL POTENTIAL START --}}
+                <div class="mt-2 bg-white overflow-x-auto rounded-xl shadow-lg" id="detailPotentialTableContainer">
+                    <table class="table min-w-max text-sm text-left text-[#22223B] bg-white border border-[#E5A821] "
+                        id="detailPotentialTable">
+                        <thead id="detailPotentialTableThead" class="bg-[#E5A821] text-white uppercase text-xs hidden">
+                            <tr>
+
+                            </tr>
+                        </thead>
+                        <tbody id="detailPotentialTableTBody" class="divide-y divide-[#A1BB3A] hidden">
+                        </tbody>
+                    </table>
+                </div>
+                <div id="loadingIndicator" class="hidden flex justify-center my-6">
+                    <span class="loading loading-spinner loading-lg text-white"></span>
+                </div>
+                {{-- DETAIL POTENTIAL END --}}
+
+                {{-- <div id="notFoundMessage"
                     class="hidden mt-6 mx-auto max-w-md bg-red-50 border border-red-200 text-red-800 p-4 rounded-lg shadow text-center text-sm items-center justify-center gap-4">
                     <div>
                         <strong>😕 Oops! Data tidak ditemukan.</strong><br>
@@ -124,7 +160,7 @@
                         <small class="text-xs">Pastikan pencarian lebih spesifik atau coba dengan kata kunci
                             lain.</small>
                     </div>
-                </div>
+                </div> --}}
 
 
             </div>

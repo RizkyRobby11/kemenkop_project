@@ -195,7 +195,7 @@ class PodesService
 
         return $results->map(function ($item) use ($kodepodes) {
             $result = $item->toArray();
-            $result['kode_podes'] = $kodepodes; // Selalu isi dengan kodepodes yang di-request
+            $result['kode_potensial'] = $kodepodes; // Selalu isi dengan kodepodes yang di-request
             return $result;
         });
     }
