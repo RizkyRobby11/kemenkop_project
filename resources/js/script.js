@@ -331,11 +331,17 @@ $(document).ready(function () {
                             potensiByKategori[kategori] = [];
                         potensiByKategori[kategori].push(`
                                <a href="#detailPotentialTableThead">
-                                <li  class="flex items-center hover:text-blue-500 cursor-pointer">
-                            <span id="listPotensial" data-id="${
+                                <li  class="flex items-center pb-5 text-[#4D6077] hover:text-blue-500 cursor-pointer"><i class="fa-duotone fa-solid fa-check"></i>
+                            <span id="listPotensial" class="pl-4" data-id="${
                                 potensial.kode_podes
-                            }">👉 ${potensial.nama || "-"}
-                            <b class="ml-1">${potensial.nilai ?? ""}</b>
+                            }">${potensial.nama || "-"}
+                                <b class="ml-1 text-[#0E5367]">${
+                                    potensial.nilai != null
+                                        ? Number(
+                                              potensial.nilai
+                                          ).toLocaleString("id-ID")
+                                        : ""
+                                }</b>
                             </span>
                             </li>
                                </a> 
@@ -369,12 +375,12 @@ $(document).ready(function () {
                 } else {
                     for (const kategori in potensiByKategori) {
                         cards.push(`
-            <div class="card w-full max-w-md bg-white shadow-lg mx-auto my-8 rounded-xl border border-gray-100">
+            <div class="card w-full  bg-white shadow-lg mx-auto my-8 rounded-xl border border-gray-100">
                 <div class="card-body shadow p-6">
-                    <span class="text-xl font-bold text-[#0E5367] block mb-2">${kategori}</span>
+                    <span class="text-xl text-center uppercase font-bold text-[#0E5367] block pb-7 border-b">${kategori}</span>
                     
-                    <hr>
-                    <ul class="mt-4 flex flex-col gap-3 text-sm">
+                    
+                    <ul class="mt-4 flex flex-col text-sm">
                         ${potensiByKategori[kategori].join("")}
                     </ul>
                 </div>
@@ -391,7 +397,7 @@ $(document).ready(function () {
                 <h2>Potensial dari wilayah : ${namaWilayah}</h2>
             </div>
         </div>
-        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3">
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6 lg:grid-cols-3">
             ${cards.join("")}
         </div>
     `);
@@ -412,6 +418,7 @@ $(document).ready(function () {
                 let tableHeader = "";
 
                 // // Render header dari key pada item pertama
+                let shownKeys = [];
                 if (response.data.length > 0) {
                     tableHeader = "<tr>";
                     for (let key in response.data[0]) {
@@ -426,6 +433,16 @@ $(document).ready(function () {
                     for (let key in item) {
                         row += `<td>${item[key]}</td>`;
                     }
+                    row += "</tr>";
+                    tableContentDetail += row;
+                });
+
+                // Render isi tabel hanya untuk key yang lolos filter
+                response.data.forEach((item) => {
+                    let row = "<tr>";
+                    shownKeys.forEach((key) => {
+                        row += `<td>${item[key]}</td>`;
+                    });
                     row += "</tr>";
                     tableContentDetail += row;
                 });
@@ -670,8 +687,16 @@ $(document).ready(function () {
                                 item.podes.forEach((podes) => {
                                     if (podes.nilai > 0) {
                                         potensials.push(`
-                                <li class="flex items-center">
-                                    <span>👉 ${podes.nama} <b class="ml-1">${podes.nilai}</b></span>
+                                <li class="flex items-center pb-5 text-[#4D6077] ">
+                                    <span><i class="fa-duotone fa-solid fa-check"></i> ${
+                                        podes.nama
+                                    } <b class="ml-1 text-[#0E5367]">${
+                                            podes.nilai != null
+                                                ? Number(
+                                                      podes.nilai
+                                                  ).toLocaleString("id-ID")
+                                                : ""
+                                        }</b></span>
                                 </li>
                             `);
                                     }
