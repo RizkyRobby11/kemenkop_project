@@ -414,6 +414,7 @@ $(document).ready(function () {
             url: `/podes/${kodeWilayah}/${kodePotensial}`,
             method: "GET",
             success: function (response) {
+                console.log(response);
                 let tableContentDetail = "";
                 let tableHeader = "";
 
@@ -567,12 +568,12 @@ $(document).ready(function () {
             kodeDesa === "Pilih Desa/Kelurahan" ||
             $(this).prop("disabled")
         ) {
-            $("#detailPotentialTable thead").addClass("hidden");
-            $("#detailPotentialTable tbody").addClass("hidden");
-            $("#filteredTableContainer").addClass("hidden");
             window.getPodesByWilayah($("#kecamatanSelect").val(), true, 1);
             return;
         }
+        $("#detailPotentialTable thead").addClass("hidden");
+        $("#detailPotentialTable tbody").addClass("hidden");
+        $("#filteredTableContainer").addClass("hidden");
         window.loadPodesData(1); // Panggil loadPodesData, bukan loadFilteredData
     });
 

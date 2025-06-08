@@ -193,10 +193,24 @@ class PodesService
 
         $results = $summaryQuery->select($selectRaw)->groupBy(...$groupBy)->get();
 
-        return $results->map(function ($item) use ($kodepodes) {
-            $result = $item->toArray();
-            $result['kode_potensial'] = $kodepodes; // Selalu isi dengan kodepodes yang di-request
-            return $result;
-        });
+        return $results
+            ->map(function ($item) use ($kodepodes, $alias) {
+                $result = $item->toArray();
+                // Hilangkan kode_kabupaten_kota dan kode_potensial
+                unset($result['kode_kabupaten_kota'], $result['kode_potensial']);
+                unset($result['kode_kecamatan'], $result['kode_potensial']);
+                unset($result['kode_desa_kelurahan'], $result['kode_potensial']);
+
+                // Format nilai alias ke ribuan jika ada
+                if (isset($result[$alias])) {
+                    $result[$alias] = number_format($result[$alias], 0, ',', '.');
+                }
+                return $result;
+            })
+            ->filter(function ($item) use ($alias) {
+                $nilai = isset($item[$alias]) ? (int)str_replace('.', '', $item[$alias]) : 0;
+                return $nilai > 0;
+            })
+            ->values();
     }
 }
