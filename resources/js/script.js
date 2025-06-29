@@ -55,7 +55,7 @@ $(document).ready(function () {
     // =========================
     function resetDropdown($el, placeholder) {
         $el.prop("disabled", true).html(
-            <option selected>${placeholder}</option>
+            `<option selected>${placeholder}</option>`
         );
     }
 
@@ -160,49 +160,49 @@ $(document).ready(function () {
             $provinsi.html("<option selected>Pilih Provinsi</option>");
             data.forEach(function (provinsi) {
                 $provinsi.append(
-                    <option value="${provinsi.kode_provinsi}">${provinsi.nama_provinsi}</option>
+                    `<option value="${provinsi.kode_provinsi}">${provinsi.nama_provinsi}</option>`
                 );
             });
         });
     }
 
     function loadKabupaten(kodeProvinsi) {
-        $.get(/provinsi/${kodeProvinsi}/kabupatenkota, function (data) {
+        $.get(`/provinsi/${kodeProvinsi}/kabupatenkota`, function (data) {
             const $kabupaten = $("#kabupatenSelect");
             $kabupaten.html(
                 "<option selected disabled>Pilih Kabupaten</option>"
             );
             data.forEach(function (kabupaten) {
                 $kabupaten.append(
-                    <option value="${kabupaten.kode_kabupaten_kota}">${kabupaten.nama_kabupaten_kota}</option>
+                    `<option value="${kabupaten.kode_kabupaten_kota}">${kabupaten.nama_kabupaten_kota}</option>`
                 );
             });
         });
     }
 
     function loadKecamatan(kodeKabupaten) {
-        $.get(/kabupatenkota/${kodeKabupaten}/kecamatan, function (data) {
+        $.get(`/kabupatenkota/${kodeKabupaten}/kecamatan`, function (data) {
             const $kecamatan = $("#kecamatanSelect");
             $kecamatan.html(
                 "<option selected disabled>Pilih Kecamatan</option>"
             );
             data.forEach(function (kecamatan) {
                 $kecamatan.append(
-                    <option value="${kecamatan.kode_kecamatan}">${kecamatan.nama_kecamatan}</option>
+                    `<option value="${kecamatan.kode_kecamatan}">${kecamatan.nama_kecamatan}</option>`
                 );
             });
         });
     }
 
     function loadDesa(kodeKecamatan) {
-        $.get(/kecamatan/${kodeKecamatan}/desakelurahan, function (data) {
+        $.get(`/kecamatan/${kodeKecamatan}/desakelurahan`, function (data) {
             const $desa = $("#desaSelect");
             $desa.html(
                 "<option selected disabled>Pilih Desa/Kelurahan</option>"
             );
             data.forEach(function (desa) {
                 $desa.append(
-                    <option value="${desa.kode_desa_kelurahan}">${desa.nama_desa_kelurahan}</option>
+                    `<option value="${desa.kode_desa_kelurahan}">${desa.nama_desa_kelurahan}</option>`
                 );
             });
         });
@@ -215,7 +215,7 @@ $(document).ready(function () {
         title = "Sedang Memuat Data..."
     ) {
         $.ajax({
-            url: /podes/${kodeWilayah}?page=${page},
+            url: `/podes/${kodeWilayah}?page=${page}`,
             method: "GET",
             success: function (response) {
                 let tableContent = "";
@@ -228,7 +228,7 @@ $(document).ready(function () {
                         let i = 0;
                         for (let key in item) {
                             if (i >= 5) break;
-                            row += <td>${item[key]}</td>;
+                            row += `<td>${item[key]}</td>`;
                             i++;
                         }
                         row += "</tr>";
@@ -253,7 +253,7 @@ $(document).ready(function () {
                     let endPage = Math.min(currentPage + 2, totalPages);
 
                     if (startPage > 1) {
-                        paginationHtml += <button class="join-item btn" onclick="window.getPodesByWilayah(1)">1</button>;
+                        paginationHtml += `<button class="join-item btn" onclick="window.getPodesByWilayah(1)">1</button>`;
                         if (startPage > 2) {
                             paginationHtml += `<button class="join-item  btn ">...</button>`;
                         }
@@ -269,7 +269,7 @@ $(document).ready(function () {
                         if (endPage < totalPages - 1) {
                             paginationHtml += `<button class="join-item btn ">...</button>`;
                         }
-                        paginationHtml += <button class="join-item btn" onclick="window.getPodesByWilayah(${kodeWilayah}, ${isDesa}, ${totalPages})">${totalPages}</button>;
+                        paginationHtml += `<button class="join-item btn" onclick="window.getPodesByWilayah(${kodeWilayah}, ${isDesa}, ${totalPages})">${totalPages}</button>`;
                     }
 
                     paginationHtml += `<button class="join-item btn" ${
@@ -316,7 +316,7 @@ $(document).ready(function () {
                                 }</b>
                             </span>
                             </li>
-                               </a> 
+                               </a>
                             `);
                     });
 
@@ -352,7 +352,7 @@ $(document).ready(function () {
         <div class="card w-full bg-white shadow-lg mx-auto my-8 rounded-xl border border-gray-100">
             <div class="card-body shadow p-6">
             <div class="w-full flex flex-col border-b pb-3 border-[#0E5367]">
-                            
+
             <span class="text-lg text-center uppercase font-bold text-[#0E5367] block w-fit">
                 ${kategori}
                 </span>
@@ -564,15 +564,15 @@ $(document).ready(function () {
         const kecamatan = $("#kecamatanSelect").val();
         const desa = $("#desaSelect").val();
 
-        let url = /filter?page=${page};
+        let url = `/filter?page=${page}`;
         if (provinsi && provinsi !== "Pilih Provinsi")
-            url += &provinsi=${provinsi};
+            url += `&provinsi=${provinsi}`;
         if (kabupaten && kabupaten !== "Pilih Kabupaten")
-            url += &kabupaten_kota=${kabupaten};
+            url += `&kabupaten_kota=${kabupaten}`;
         if (kecamatan && kecamatan !== "Pilih Kecamatan")
-            url += &kecamatan=${kecamatan};
+            url += `&kecamatan=${kecamatan}`;
         if (desa && desa !== "Pilih Desa/Kelurahan")
-            url += &desa_kelurahan=${desa};
+            url += `&desa_kelurahan=${desa}`;
 
         $.ajax({
             url: url,
@@ -597,7 +597,7 @@ $(document).ready(function () {
                         let i = 0;
                         for (let key in item) {
                             if (i >= 5) break;
-                            row += <td>${item[key]}</td>;
+                            row += `<td>${item[key]}</td>`;
                             i++;
                         }
                         row += "</tr>";
@@ -623,7 +623,7 @@ $(document).ready(function () {
                     let endPage = Math.min(currentPage + 2, totalPages);
 
                     if (startPage > 1) {
-                        paginationHtml += <button class="join-item btn" onclick="window.loadPodesData(1)">1</button>;
+                        paginationHtml += `<button class="join-item btn" onclick="window.loadPodesData(1)">1</button>`;
                         if (startPage > 2) {
                             paginationHtml += `<button class="join-item  btn ">...</button>`;
                         }
@@ -639,7 +639,7 @@ $(document).ready(function () {
                         if (endPage < totalPages - 1) {
                             paginationHtml += `<button class="join-item btn  ">...</button>`;
                         }
-                        paginationHtml += <button class="join-item btn" onclick="window.loadPodesData(${totalPages})">${totalPages}</button>;
+                        paginationHtml += `<button class="join-item btn" onclick="window.loadPodesData(${totalPages})">${totalPages}</button>`;
                     }
 
                     paginationHtml += `<button class="join-item btn" ${
