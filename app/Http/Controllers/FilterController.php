@@ -30,10 +30,9 @@ class FilterController extends Controller
 
         // Summary
         $summary = $this->podesService->getPodesSummary($request->kodewilayah);
-        $summaryArray = [];
         return response()->json([
             'detail' => $podes,
-            'summary' => $summaryArray,
+            'summary' => $summary,
         ]);
     }
 

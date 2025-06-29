@@ -128,7 +128,7 @@ $(document).ready(function () {
                 $wrapper.html(`
                     <div class="card w-full max-w-md bg-white shadow-lg mx-auto my-8 rounded-xl border border-gray-100">
                         <div class="card-body p-6">
-                            <span class=" mb-2 text-2xl">Potensi dari Desa/Kelurahan :</span>
+                            <span class=" mb-2 text-xl uppercase">Potensi dari Desa/Kelurahan :</span>
                             <h2 class="text-2xl font-bold text-gray-800 mb-1">${namaDesa}</h2>
                             <hr>
                             <ul class="mt-4 flex flex-col gap-3 text-sm">
@@ -150,36 +150,6 @@ $(document).ready(function () {
             },
         });
     };
-
-    // // Fungsi untuk render chart
-    // function renderPotensiChart(labels, data) {
-    //     const ctx = document.getElementById("potensiChart").getContext("2d");
-    //     if (window.potensiChart) {
-    //         window.potensiChart.destroy();
-    //     }
-    //     window.potensiChart = new Chart(ctx, {
-    //         type: "bar",
-    //         data: {
-    //             labels: labels,
-    //             datasets: [
-    //                 {
-    //                     label: "Nilai Potensi",
-    //                     data: data,
-    //                     backgroundColor: "#42aafa",
-    //                 },
-    //             ],
-    //         },
-    //         options: {
-    //             responsive: true,
-    //             plugins: {
-    //                 legend: { display: false },
-    //             },
-    //             scales: {
-    //                 y: { beginAtZero: true },
-    //             },
-    //         },
-    //     });
-    // }
 
     // =========================
     // Dropdown Data Loaders
@@ -241,7 +211,8 @@ $(document).ready(function () {
     window.getPodesByWilayah = function (
         kodeWilayah,
         isDesa = false,
-        page = 1
+        page = 1,
+        title = "Sedang Memuat Data..."
     ) {
         $.ajax({
             url: /podes/${kodeWilayah}?page=${page},
@@ -284,7 +255,7 @@ $(document).ready(function () {
                     if (startPage > 1) {
                         paginationHtml += <button class="join-item btn" onclick="window.getPodesByWilayah(1)">1</button>;
                         if (startPage > 2) {
-                            paginationHtml += <button class="join-item text-white btn btn-disabled">...</button>;
+                            paginationHtml += `<button class="join-item  btn ">...</button>`;
                         }
                     }
 
@@ -296,7 +267,7 @@ $(document).ready(function () {
 
                     if (endPage < totalPages) {
                         if (endPage < totalPages - 1) {
-                            paginationHtml += <button class="join-item btn btn-disabled text-white">...</button>;
+                            paginationHtml += `<button class="join-item btn ">...</button>`;
                         }
                         paginationHtml += <button class="join-item btn" onclick="window.getPodesByWilayah(${kodeWilayah}, ${isDesa}, ${totalPages})">${totalPages}</button>;
                     }
@@ -316,28 +287,37 @@ $(document).ready(function () {
                     : [];
 
                 // Jika desa, ambil nama desa dari summary atau dari dropdown
-                let title = "-";
                 if (isDesa) {
                     title = $("#desaSelect option:selected").text();
-                } else if (summaryArr.length > 0) {
-                    title = summaryArr[1].nilai;
                 }
                 // Kategorikan summaryList
                 let potensiByKategori = {};
+
+                // let count = 0;
+
                 summaryArr
-                    .slice(2)
-                    .filter((item) => Number(item.nilai) !== 0)
-                    .forEach((item) => {
-                        const kategori = getKategoriPotensi(item.nama);
+                    .filter((potensial) => Number(potensial.nilai) !== 0)
+                    .forEach((potensial, i) => {
+                        const kategori = getKategoriPotensi(potensial.nama);
                         if (!potensiByKategori[kategori])
                             potensiByKategori[kategori] = [];
                         potensiByKategori[kategori].push(`
-            <li class="flex items-center">
-                <span>👉 ${item.nama || "-"} <b class="ml-1">${
-                            item.nilai ?? ""
-                        }</b></span>
-            </li>
-        `);
+                               <a href="#detailPotentialTableThead" id="listPotensial">
+                                <li  class="flex items-center pb-5 text-[#4D6077] hover:text-blue-500 cursor-pointer"><i class="fa-duotone fa-solid fa-check"></i>
+                            <span id="listPotensial" class="pl-4" data-id="${
+                                potensial.kode_podes
+                            }">${potensial.nama || "-"}
+                                <b class="ml-1 text-[#0E5367]">${
+                                    potensial.nilai != null
+                                        ? Number(
+                                              potensial.nilai
+                                          ).toLocaleString("id-ID")
+                                        : ""
+                                }</b>
+                            </span>
+                            </li>
+                               </a> 
+                            `);
                     });
 
                 let cards = [];
@@ -366,30 +346,36 @@ $(document).ready(function () {
     `);
                 } else {
                     for (const kategori in potensiByKategori) {
+                        // Hitung jumlah <a> (listPotential) pada kategori ini
+                        const count = potensiByKategori[kategori].length;
                         cards.push(`
-            <div class="card w-full max-w-md bg-white shadow-lg mx-auto my-8 rounded-xl border border-gray-100">
-                <div class="card-body p-6">
-                    <span class="text-xl font-bold text-[#2a8bd3] block mb-2">${kategori}</span>
-
-                    <hr>
-                    <ul class="mt-4 flex flex-col gap-3 text-sm">
-                        ${potensiByKategori[kategori].join("")}
-                    </ul>
-                </div>
+        <div class="card w-full bg-white shadow-lg mx-auto my-8 rounded-xl border border-gray-100">
+            <div class="card-body shadow p-6">
+            <div class="w-full flex flex-col border-b pb-3 border-[#0E5367]">
+                            
+            <span class="text-lg text-center uppercase font-bold text-[#0E5367] block w-fit">
+                ${kategori}
+                </span>
+                <span class="pt-2 text-base font-semibold text-[#A1BB3A]">Jumlah Potensial: ${count}</span>
             </div>
-        `);
+                <ul class="mt-4 flex flex-col text-sm">
+                    ${potensiByKategori[kategori].join("")}
+                </ul>
+            </div>
+        </div>
+    `);
                     }
                 }
 
                 if (summaryArr.length > 0) {
                     // Tampilkan nama wilayah di atas grid card
                     $("#filteredTableContainer").removeClass("hidden").html(`
-        <div class=" w-full p-2 text-2xl flex justify-center font-bold text-center text-[#42aafa]">
-            <div class="w-fit p-2 bg-white rounded-lg h-full">
+        <div class=" w-full p-2 text-2xl flex justify-center font-bold text-center text-[#0E5367]">
+            <div class="w-fit p-2 border-b  uppercase shadow-[0_4px_8px_-4px_rgba(14,83,103,0.25)] h-full">
                 <h2>Potensial dari wilayah : ${namaWilayah}</h2>
             </div>
         </div>
-        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3">
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6 lg:grid-cols-3">
             ${cards.join("")}
         </div>
     `);
@@ -401,57 +387,156 @@ $(document).ready(function () {
         });
     };
 
+    function getDetailPotetial(kodeWilayah, kodePotensial) {
+        $.ajax({
+            url: `/podes/${kodeWilayah}/${kodePotensial}`,
+            method: "GET",
+            success: function (response) {
+                console.log(response);
+                let tableContentDetail = "";
+                let tableHeader = "";
+
+                // // Render header dari key pada item pertama
+                let shownKeys = [];
+                if (response.data.length > 0) {
+                    tableHeader = "<tr>";
+                    for (let key in response.data[0]) {
+                        tableHeader += `<th>${key}</th>`;
+                    }
+                    tableHeader += "</tr>";
+                }
+
+                // // Render isi tabel
+                response.data.forEach((item) => {
+                    let row = "<tr>";
+                    for (let key in item) {
+                        row += `<td>${item[key]}</td>`;
+                    }
+                    row += "</tr>";
+                    tableContentDetail += row;
+                });
+
+                // Render isi tabel hanya untuk key yang lolos filter
+                response.data.forEach((item) => {
+                    let row = "<tr>";
+                    shownKeys.forEach((key) => {
+                        row += `<td>${item[key]}</td>`;
+                    });
+                    row += "</tr>";
+                    tableContentDetail += row;
+                });
+
+                // Render header dari key pada item pertama
+                // if (response.data.length > 0) {
+                //     tableHeader = "<tr>";
+                //     const keys = Object.keys(response.data[0]);
+                //     // Mulai dari index 1 dan sampai sebelum terakhir
+                //     for (let i = 1; i < keys.length - 1; i++) {
+                //         tableHeader += `<th>${keys[i]}</th>`;
+                //     }
+                //     tableHeader += "</tr>";
+                // }
+
+                // // Render isi tabel
+                // response.data.forEach((item) => {
+                //     let row = "<tr>";
+                //     const keys = Object.keys(item);
+                //     for (let i = 1; i < keys.length - 1; i++) {
+                //         row += `<td>${item[keys[i]]}</td>`;
+                //     }
+                //     row += "</tr>";
+                //     tableContentDetail += row;
+                // });
+
+                // Set header dan body
+                $("#detailPotentialTable thead").html(tableHeader);
+                $("#detailPotentialTable tbody").html(tableContentDetail);
+            },
+        });
+    }
+
+    $(document).on("click", "#listPotensial", function () {
+        $("#detailPotentialTable tbody").removeClass("hidden");
+        $("#detailPotentialTable thead").removeClass("hidden");
+        const kodePotensial = $(this).data("id");
+        // Get the active selected wilayah code based on dropdown hierarchy
+        const kodeWilayah = window.kodeWilayah;
+        if (kodePotensial && kodeWilayah) {
+            getDetailPotetial(kodeWilayah, kodePotensial);
+        }
+    });
+
     // =========================
     // Dropdown Event Handlers
     // =========================
     $("#provinsiSelect").change(function () {
         const kodeProvinsi = $(this).val();
+        window.kodeWilayah = kodeProvinsi;
         resetDropdown($("#kabupatenSelect"), "Pilih Kabupaten");
         resetDropdown($("#kecamatanSelect"), "Pilih Kecamatan");
         resetDropdown($("#desaSelect"), "Pilih Desa/Kelurahan");
         $("#filteredTableContainer").addClass("hidden"); // Tambahkan baris ini
         if (kodeProvinsi === "Pilih Provinsi") {
+            $("#detailPotentialTable thead").addClass("hidden");
+            $("#detailPotentialTable tbody").addClass("hidden");
             $("#chartContainer").removeClass("hidden");
             window.loadPodesData(1);
             $("#kabupatenSelect").prop("disabled", true);
             return;
         }
+        $("#detailPotentialTable thead").addClass("hidden");
+        $("#detailPotentialTable tbody").addClass("hidden");
         $("#kabupatenSelect").prop("disabled", false);
         loadKabupaten(kodeProvinsi);
         $("#chartContainer").addClass("hidden");
-        getPodesByWilayah(kodeProvinsi);
+        let title = $("#provinsiSelect option:selected").text();
+        getPodesByWilayah(kodeProvinsi, false, 1, title);
+        // $("")
         // window.loadPodesData(1);
     });
 
     $("#kabupatenSelect").change(function () {
         const kodeKabupaten = $(this).val();
+        window.kodeWilayah = kodeKabupaten;
         resetDropdown($("#kecamatanSelect"), "Pilih Kecamatan");
         resetDropdown($("#desaSelect"), "Pilih Desa/Kelurahan");
         $("#filteredTableContainer").addClass("hidden"); // Tambahkan baris ini
         if (kodeKabupaten === "Pilih Kabupaten") {
+            $("#detailPotentialTable thead").addClass("hidden");
+            $("#detailPotentialTable tbody").addClass("hidden");
             window.getPodesByWilayah($("#provinsiSelect").val());
             $("#kecamatanSelect").prop("disabled", true);
             return;
         }
+        $("#detailPotentialTable thead").addClass("hidden");
+        $("#detailPotentialTable tbody").addClass("hidden");
         $("#kecamatanSelect").prop("disabled", false);
         loadKecamatan(kodeKabupaten);
         $("#chartContainer").addClass("hidden");
-        getPodesByWilayah(kodeKabupaten);
+        let title = $("#kabupatenSelect option:selected").text();
+        getPodesByWilayah(kodeKabupaten, false, 1, title);
     });
 
     $("#kecamatanSelect").change(function () {
         const kodeKecamatan = $(this).val();
+        window.kodeWilayah = kodeKecamatan;
         resetDropdown($("#desaSelect"), "Pilih Desa/Kelurahan");
         $("#filteredTableContainer").addClass("hidden"); // Tambahkan baris ini
         if (kodeKecamatan === "Pilih Kecamatan") {
+            $("#detailPotentialTable thead").addClass("hidden");
+            $("#detailPotentialTable tbody").addClass("hidden");
             window.getPodesByWilayah($("#kabupatenSelect").val());
             $("#desaSelect").prop("disabled", true);
             return;
         }
+        $("#detailPotentialTable thead").addClass("hidden");
+        $("#detailPotentialTable tbody").addClass("hidden");
         $("#desaSelect").prop("disabled", false);
         loadDesa(kodeKecamatan);
         $("#chartContainer").addClass("hidden");
         getPodesByWilayah(kodeKecamatan);
+        let title = $("#kecamatanSelect option:selected").text();
+        getPodesByWilayah(kodeKecamatan, false, 1, title);
     });
 
     $("#desaSelect").change(function () {
@@ -461,10 +546,12 @@ $(document).ready(function () {
             kodeDesa === "Pilih Desa/Kelurahan" ||
             $(this).prop("disabled")
         ) {
-            $("#filteredTableContainer").addClass("hidden");
             window.getPodesByWilayah($("#kecamatanSelect").val(), true, 1);
             return;
         }
+        $("#detailPotentialTable thead").addClass("hidden");
+        $("#detailPotentialTable tbody").addClass("hidden");
+        $("#filteredTableContainer").addClass("hidden");
         window.loadPodesData(1); // Panggil loadPodesData, bukan loadFilteredData
     });
 
@@ -497,14 +584,16 @@ $(document).ready(function () {
                 $("#notFoundMessage").addClass("hidden");
             },
             success: function (response) {
-                // console.log(response);
                 let tableContent = "";
                 if (response.data.length === 0) {
                     $("#notFoundMessage").removeClass("hidden");
                 } else {
                     $("#notFoundMessage").addClass("hidden");
-                    response.data.forEach((item) => {
-                        let row = "<tr>";
+                    response.data.forEach((item, idx) => {
+                        // Tambahkan class ganjil/genap
+                        const rowClass =
+                            idx % 2 === 0 ? "bg-white" : "bg-[#F9F7F1]";
+                        let row = `<tr class="${rowClass}">`;
                         let i = 0;
                         for (let key in item) {
                             if (i >= 5) break;
@@ -520,7 +609,7 @@ $(document).ready(function () {
                 // Pagination
                 let paginationHtml = "";
                 if (response.data.length > 0) {
-                    paginationHtml += `<button class="join-item btn" ${
+                    paginationHtml += `<button class="join-item btn " ${
                         response.prev_page_url
                             ? `onclick="window.loadPodesData(${
                                   response.current_page - 1
@@ -536,7 +625,7 @@ $(document).ready(function () {
                     if (startPage > 1) {
                         paginationHtml += <button class="join-item btn" onclick="window.loadPodesData(1)">1</button>;
                         if (startPage > 2) {
-                            paginationHtml += <button class="join-item text-white btn btn-disabled">...</button>;
+                            paginationHtml += `<button class="join-item  btn ">...</button>`;
                         }
                     }
 
@@ -548,7 +637,7 @@ $(document).ready(function () {
 
                     if (endPage < totalPages) {
                         if (endPage < totalPages - 1) {
-                            paginationHtml += <button class="join-item btn btn-disabled text-white">...</button>;
+                            paginationHtml += `<button class="join-item btn  ">...</button>`;
                         }
                         paginationHtml += <button class="join-item btn" onclick="window.loadPodesData(${totalPages})">${totalPages}</button>;
                     }
@@ -577,8 +666,16 @@ $(document).ready(function () {
                                 item.podes.forEach((podes) => {
                                     if (podes.nilai > 0) {
                                         potensials.push(`
-                                <li class="flex items-center">
-                                    <span>👉 ${podes.nama} <b class="ml-1">${podes.nilai}</b></span>
+                                <li class="flex items-center pb-5 text-[#4D6077] ">
+                                    <span><i class="fa-duotone fa-solid fa-check"></i> ${
+                                        podes.nama
+                                    } <b class="ml-1 text-[#0E5367]">${
+                                            podes.nilai != null
+                                                ? Number(
+                                                      podes.nilai
+                                                  ).toLocaleString("id-ID")
+                                                : ""
+                                        }</b></span>
                                 </li>
                             `);
                                     }
@@ -601,9 +698,9 @@ $(document).ready(function () {
                     $("#filteredTableContainer").removeClass("hidden").html(`
             <div class="card w-full max-w-md bg-white shadow-lg mx-auto my-8 rounded-xl border border-gray-100">
                 <div class="card-body p-6">
-                    <span class="mb-2 text-2xl text-center font-bold">Potensi dari Desa/Kelurahan :</span>
+                    <span class="mb-2 text-xl text-center uppercase font-bold">Potensi dari Desa/Kelurahan :</span>
                     <div class="w-full flex justify-center rounded-full h-full">
-                                <h2 class="text-2xl bg-[#42aafa] p-3 rounded-lg w-fit block text-white font-bold text-center">${namaDesa}</h2>
+                                <h2 class="text-2xl  w-fit block text-[#0E5367] font-bold text-center">${namaDesa}</h2>
                             </div>
                     <hr>
                     <ul class="mt-4 flex flex-col gap-3 text-sm">

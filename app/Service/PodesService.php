@@ -73,18 +73,21 @@ class PodesService
             return null;
         }
 
+        $summaryArray = [];
         foreach ($this->kodepodes as $kodep) {
             $columnName = $kodep->{'COL 1'};
-            $selectRaw[] = DB::raw("SUM(podes.{$columnName}) as '{$kodep->{'COL 2'}}'");
+            $selectRaw[] = DB::raw("SUM(podes.{$columnName}) as '{$kodep->{'COL 2'} }'");
         }
 
-        $summary = $summaryQuery->select($selectRaw)->groupBy(...$groupBy)->first();
+        $summary = $summaryQuery->select($selectRaw)->groupBy($groupBy)->first();
+        $summary = array_slice($summary->toArray(), 2);
 
         if ($summary) {
-            foreach ($summary->toArray() as $key => $value) {
+            foreach ($summary as $key => $value) {
                 $summaryArray[] = [
                     'nama' => $key,
-                    'nilai' => $value,
+                    'kode_podes' => $this->kodepodes->where('COL 2', $key)->first()->{'COL 1'},
+                    'nilai' => $value
                 ];
             }
         }
@@ -190,10 +193,24 @@ class PodesService
 
         $results = $summaryQuery->select($selectRaw)->groupBy(...$groupBy)->get();
 
-        return $results->map(function ($item) use ($kodepodes) {
-            $result = $item->toArray();
-            $result['kode_podes'] = $kodepodes; // Selalu isi dengan kodepodes yang di-request
-            return $result;
-        });
+        return $results
+            ->map(function ($item) use ($kodepodes, $alias) {
+                $result = $item->toArray();
+                // Hilangkan kode_kabupaten_kota dan kode_potensial
+                unset($result['kode_kabupaten_kota'], $result['kode_potensial']);
+                unset($result['kode_kecamatan'], $result['kode_potensial']);
+                unset($result['kode_desa_kelurahan'], $result['kode_potensial']);
+
+                // Format nilai alias ke ribuan jika ada
+                if (isset($result[$alias])) {
+                    $result[$alias] = number_format($result[$alias], 0, ',', '.');
+                }
+                return $result;
+            })
+            ->filter(function ($item) use ($alias) {
+                $nilai = isset($item[$alias]) ? (int)str_replace('.', '', $item[$alias]) : 0;
+                return $nilai > 0;
+            })
+            ->values();
     }
 }
