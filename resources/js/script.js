@@ -1,4 +1,15 @@
 $(document).ready(function () {
+    $(document).on("click", "#btnConvertToExcel", function (e) {
+        e.preventDefault();
+        // Ambil tabel
+        const table = document.getElementById("detailPotentialTable");
+        if (!table) return;
+
+        // Convert tabel ke worksheet
+        const wb = XLSX.utils.table_to_book(table, { sheet: "Detail" });
+        // Download file Excel
+        XLSX.writeFile(wb, "detail_potential.xlsx");
+    });
     const kategoriPotensi = [
         {
             nama: "Industri Mikro dan Kecil",
@@ -302,7 +313,7 @@ $(document).ready(function () {
                         if (!potensiByKategori[kategori])
                             potensiByKategori[kategori] = [];
                         potensiByKategori[kategori].push(`
-                               <a href="#detailPotentialTableThead" id="listPotensial">
+                               <a href="#detailPotentialTableContainer" id="listPotensial">
                                 <li  class="flex items-center pb-5 text-[#4D6077] hover:text-blue-500 cursor-pointer"><i class="fa-duotone fa-solid fa-check"></i>
                             <span id="listPotensial" class="pl-4" data-id="${
                                 potensial.kode_podes
@@ -456,6 +467,7 @@ $(document).ready(function () {
     }
 
     $(document).on("click", "#listPotensial", function () {
+        $("#detailPotentialTableContainer").removeClass("hidden");
         $("#detailPotentialTable tbody").removeClass("hidden");
         $("#detailPotentialTable thead").removeClass("hidden");
         const kodePotensial = $(this).data("id");
@@ -477,6 +489,7 @@ $(document).ready(function () {
         resetDropdown($("#desaSelect"), "Pilih Desa/Kelurahan");
         $("#filteredTableContainer").addClass("hidden"); // Tambahkan baris ini
         if (kodeProvinsi === "Pilih Provinsi") {
+            $("#detailPotentialTableContainer").addClass("hidden");
             $("#detailPotentialTable thead").addClass("hidden");
             $("#detailPotentialTable tbody").addClass("hidden");
             $("#chartContainer").removeClass("hidden");
@@ -484,6 +497,7 @@ $(document).ready(function () {
             $("#kabupatenSelect").prop("disabled", true);
             return;
         }
+        $("#detailPotentialTableContainer").addClass("hidden");
         $("#detailPotentialTable thead").addClass("hidden");
         $("#detailPotentialTable tbody").addClass("hidden");
         $("#kabupatenSelect").prop("disabled", false);
@@ -502,12 +516,14 @@ $(document).ready(function () {
         resetDropdown($("#desaSelect"), "Pilih Desa/Kelurahan");
         $("#filteredTableContainer").addClass("hidden"); // Tambahkan baris ini
         if (kodeKabupaten === "Pilih Kabupaten") {
+            $("#detailPotentialTableContainer").addClass("hidden");
             $("#detailPotentialTable thead").addClass("hidden");
             $("#detailPotentialTable tbody").addClass("hidden");
             window.getPodesByWilayah($("#provinsiSelect").val());
             $("#kecamatanSelect").prop("disabled", true);
             return;
         }
+        $("#detailPotentialTableContainer").addClass("hidden");
         $("#detailPotentialTable thead").addClass("hidden");
         $("#detailPotentialTable tbody").addClass("hidden");
         $("#kecamatanSelect").prop("disabled", false);
@@ -523,12 +539,14 @@ $(document).ready(function () {
         resetDropdown($("#desaSelect"), "Pilih Desa/Kelurahan");
         $("#filteredTableContainer").addClass("hidden"); // Tambahkan baris ini
         if (kodeKecamatan === "Pilih Kecamatan") {
+            $("#detailPotentialTableContainer").addClass("hidden");
             $("#detailPotentialTable thead").addClass("hidden");
             $("#detailPotentialTable tbody").addClass("hidden");
             window.getPodesByWilayah($("#kabupatenSelect").val());
             $("#desaSelect").prop("disabled", true);
             return;
         }
+        $("#detailPotentialTableContainer").addClass("hidden");
         $("#detailPotentialTable thead").addClass("hidden");
         $("#detailPotentialTable tbody").addClass("hidden");
         $("#desaSelect").prop("disabled", false);
@@ -549,6 +567,7 @@ $(document).ready(function () {
             window.getPodesByWilayah($("#kecamatanSelect").val(), true, 1);
             return;
         }
+        $("#detailPotentialTableContainer").addClass("hidden");
         $("#detailPotentialTable thead").addClass("hidden");
         $("#detailPotentialTable tbody").addClass("hidden");
         $("#filteredTableContainer").addClass("hidden");

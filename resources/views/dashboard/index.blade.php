@@ -14,6 +14,10 @@
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script src="https://kit.fontawesome.com/d8c46daaeb.js" crossorigin="anonymous"></script>
 
+    {{-- cdn sheetsjs start --}}
+    <script src="https://cdn.sheetjs.com/xlsx-latest/package/dist/xlsx.full.min.js"></script>
+    {{-- cdn sheetsjs end --}}
+
 </head>
 
 <body class="font-[Inter]">
@@ -130,14 +134,17 @@
                 {{-- CHART PROVINSI END --}}
 
                 {{-- POTENTIAL CARD BASE ON REGION OR DESA/KELURAHAN START --}}
-
                 <div class="mt-6 hidden overflow-x-auto rounded-xl" id="filteredTableContainer">
                     <div id="filteredCardWrapper"></div>
                 </div>
                 {{-- POTENTIAL CARD BASE ON REGION OR DESA/KELURAHAN END --}}
 
                 {{-- DETAIL POTENTIAL START --}}
-                <div class="mt-2 bg-white overflow-x-auto rounded-xl shadow-lg" id="detailPotentialTableContainer">
+                <div class="mt-2 bg-white overflow-x-auto rounded-xl hidden shadow-lg"
+                    id="detailPotentialTableContainer">
+                    <a href="" id="btnConvertToExcel"
+                        class="btn btn-outline my-3 btn-success hover:text-white"><i
+                            class="fa-regular fa-file-excel"></i> Simpan sebagai Excel</a>
                     <table class="table min-w-max text-sm text-left text-[#22223B] bg-white border border-[#E5A821] "
                         id="detailPotentialTable">
                         <thead id="detailPotentialTableThead" class="bg-[#E5A821] text-white uppercase text-xs hidden">
