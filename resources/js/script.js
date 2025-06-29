@@ -128,7 +128,7 @@ $(document).ready(function () {
                 $wrapper.html(`
                     <div class="card w-full max-w-md bg-white shadow-lg mx-auto my-8 rounded-xl border border-gray-100">
                         <div class="card-body p-6">
-                            <span class=" mb-2 text-2xl uppercase">Potensi dari Desa/Kelurahan :</span>
+                            <span class=" mb-2 text-xl uppercase">Potensi dari Desa/Kelurahan :</span>
                             <h2 class="text-2xl font-bold text-gray-800 mb-1">${namaDesa}</h2>
                             <hr>
                             <ul class="mt-4 flex flex-col gap-3 text-sm">
@@ -150,36 +150,6 @@ $(document).ready(function () {
             },
         });
     };
-
-    // // Fungsi untuk render chart
-    // function renderPotensiChart(labels, data) {
-    //     const ctx = document.getElementById("potensiChart").getContext("2d");
-    //     if (window.potensiChart) {
-    //         window.potensiChart.destroy();
-    //     }
-    //     window.potensiChart = new Chart(ctx, {
-    //         type: "bar",
-    //         data: {
-    //             labels: labels,
-    //             datasets: [
-    //                 {
-    //                     label: "Nilai Potensi",
-    //                     data: data,
-    //                     backgroundColor: "#42aafa",
-    //                 },
-    //             ],
-    //         },
-    //         options: {
-    //             responsive: true,
-    //             plugins: {
-    //                 legend: { display: false },
-    //             },
-    //             scales: {
-    //                 y: { beginAtZero: true },
-    //             },
-    //         },
-    //     });
-    // }
 
     // =========================
     // Dropdown Data Loaders
@@ -323,6 +293,8 @@ $(document).ready(function () {
                 // Kategorikan summaryList
                 let potensiByKategori = {};
 
+                // let count = 0;
+
                 summaryArr
                     .filter((potensial) => Number(potensial.nilai) !== 0)
                     .forEach((potensial, i) => {
@@ -330,7 +302,7 @@ $(document).ready(function () {
                         if (!potensiByKategori[kategori])
                             potensiByKategori[kategori] = [];
                         potensiByKategori[kategori].push(`
-                               <a href="#detailPotentialTableThead">
+                               <a href="#detailPotentialTableThead" id="listPotensial">
                                 <li  class="flex items-center pb-5 text-[#4D6077] hover:text-blue-500 cursor-pointer"><i class="fa-duotone fa-solid fa-check"></i>
                             <span id="listPotensial" class="pl-4" data-id="${
                                 potensial.kode_podes
@@ -374,18 +346,24 @@ $(document).ready(function () {
     `);
                 } else {
                     for (const kategori in potensiByKategori) {
+                        // Hitung jumlah <a> (listPotential) pada kategori ini
+                        const count = potensiByKategori[kategori].length;
                         cards.push(`
-            <div class="card w-full  bg-white shadow-lg mx-auto my-8 rounded-xl border border-gray-100">
-                <div class="card-body shadow p-6">
-                    <span class="text-xl text-center uppercase font-bold text-[#0E5367] block pb-7 border-b">${kategori}</span>
-                    
-                    
-                    <ul class="mt-4 flex flex-col text-sm">
-                        ${potensiByKategori[kategori].join("")}
-                    </ul>
-                </div>
+        <div class="card w-full bg-white shadow-lg mx-auto my-8 rounded-xl border border-gray-100">
+            <div class="card-body shadow p-6">
+            <div class="w-full flex flex-col border-b pb-3 border-[#0E5367]">
+                            
+            <span class="text-lg text-center uppercase font-bold text-[#0E5367] block w-fit">
+                ${kategori}
+                </span>
+                <span class="pt-2 text-base font-semibold text-[#A1BB3A]">Jumlah Potensial: ${count}</span>
             </div>
-        `);
+                <ul class="mt-4 flex flex-col text-sm">
+                    ${potensiByKategori[kategori].join("")}
+                </ul>
+            </div>
+        </div>
+    `);
                     }
                 }
 
@@ -720,7 +698,7 @@ $(document).ready(function () {
                     $("#filteredTableContainer").removeClass("hidden").html(`
             <div class="card w-full max-w-md bg-white shadow-lg mx-auto my-8 rounded-xl border border-gray-100">
                 <div class="card-body p-6">
-                    <span class="mb-2 text-2xl text-center uppercase font-bold">Potensi dari Desa/Kelurahan :</span>
+                    <span class="mb-2 text-xl text-center uppercase font-bold">Potensi dari Desa/Kelurahan :</span>
                     <div class="w-full flex justify-center rounded-full h-full">
                                 <h2 class="text-2xl  w-fit block text-[#0E5367] font-bold text-center">${namaDesa}</h2>
                             </div>
